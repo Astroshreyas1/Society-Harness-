@@ -18,3 +18,8 @@ data/real/
 
 # trained models (48 MB, minutes to retrain with train-needs / train-jev); their hold-out reports are kept
 data/models/*.npz
+
+# working notes for the maintainer / agent, not part of the deliverable
+HANDOFF.md
+ISSUES.md
+tasks/
