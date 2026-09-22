@@ -5,5 +5,17 @@ description = "Control: program-centric discrete-event simulator for concurrent 
 requires-python = ">=3.12"
 dependencies = ["numpy>=1.26"]
 
+[dependency-groups]
+# the Society of LLMs agents (society/): the DAG runner, gates and the seeded FastAPI target app they build
+society = [
+    "pydantic>=2.11",
+    "jsonschema>=4.23",
+    "fastapi>=0.115",
+    "httpx>=0.28",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.25",
+    "uvicorn>=0.30",
+]
+
 [tool.uv]
 package = false

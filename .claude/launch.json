@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "society-dashboard",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "python", "-m", "society.web.server", "--port", "8020"],
+      "port": 8020
+    }
+  ]
+}

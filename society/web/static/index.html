@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Society Harness</title>
+<style>
+:root{--bg:#0f1319;--panel:#171c24;--panel2:#1e242e;--line:#2a3140;--text:#e6e9ef;--muted:#8b94a7;--accent:#5aa9ff;--ok:#3ecf8e;--warn:#f5b84f;--bad:#ff5e6c;--purple:#b48cff;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:14px 22px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#151a22,#0f1319);position:sticky;top:0;z-index:5}
+header h1{font-size:17px;margin:0;font-weight:650;letter-spacing:.2px}header .sub{color:var(--muted);font-size:12.5px}
+nav{margin-left:auto;display:flex;gap:6px}nav button{background:transparent;border:1px solid var(--line);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+nav button.active{color:var(--text);border-color:var(--accent);background:#1a2331}
+main{padding:18px 22px;max-width:1600px;margin:0 auto}section{display:none}section.active{display:block}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(auto-fit,minmax(420px,1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.g4{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}.card h3{margin:0 0 8px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.card h2{margin:0 0 6px;font-size:16px}.muted{color:var(--muted)}.mono{font-family:var(--mono);font-size:12.5px}
+.kpi{display:flex;flex-wrap:wrap;gap:10px}.kpi div{background:var(--panel2);border-radius:10px;padding:10px 12px;min-width:120px;flex:1}.kpi b{display:block;font-size:20px;font-weight:650}.kpi span{color:var(--muted);font-size:12px}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}th{color:var(--muted);font-weight:600;font-size:12px}
+tr.off td:first-child{color:var(--bad)}tr.gate td:first-child{color:var(--warn)}tr.needs td:first-child{color:var(--ok)}tr.oracle td:first-child{color:var(--purple)}
+.chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:600;background:var(--panel2);color:var(--muted)}
+.chip.ok{background:#153a2c;color:var(--ok)}.chip.bad{background:#42202a;color:var(--bad)}.chip.warn{background:#4a3818;color:var(--warn)}.chip.run{background:#1b2d45;color:var(--accent)}.chip.wait{background:#2b2640;color:var(--purple)}
+.bar{height:10px;background:var(--panel2);border-radius:6px;overflow:hidden;position:relative}.bar i{display:block;height:100%;background:var(--accent);border-radius:6px}.bar i.ok{background:var(--ok)}.bar i.warn{background:var(--warn)}.bar i.bad{background:var(--bad)}.bar i.purple{background:var(--purple)}
+.row{display:flex;align-items:center;gap:10px;margin:4px 0}.row .lbl{width:150px;color:var(--muted);font-size:12.5px}.row .bar{flex:1}.row .val{width:150px;text-align:right;font-family:var(--mono);font-size:12px}
+.dag{display:flex;align-items:center;gap:4px;flex-wrap:wrap}.node{border:1px solid var(--line);border-radius:8px;padding:4px 8px;min-width:96px;background:var(--panel2);font-size:12px}.node b{display:block;font-size:12px}.node small{color:var(--muted)}
+.node.running{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}.node.approved{border-color:var(--ok)}.node.rejected{border-color:var(--warn)}.node.queued{border-color:var(--purple);border-style:dashed}.node.escalated{border-color:var(--bad)}.node.judging{border-color:#7bd}
+.arrow{color:var(--muted);font-size:12px}
+.feed{max-height:520px;overflow:auto;font-family:var(--mono);font-size:12px;line-height:1.5}.feed div{padding:2px 0;border-bottom:1px dashed #222a36}.feed .t{color:var(--muted);display:inline-block;width:64px}.feed .p{display:inline-block;width:52px;font-weight:700}
+.feed .ok{color:var(--ok)}.feed .bad{color:var(--bad)}.feed .warn{color:var(--warn)}.feed .info{color:var(--accent)}.feed .lease{color:var(--purple)}
+form.launch{display:flex;flex-wrap:wrap;gap:10px;align-items:end}form.launch label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+input,select{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:7px 9px;border-radius:8px;font-size:13px;min-width:90px}
+button.primary{background:var(--accent);color:#08131f;border:0;padding:9px 16px;border-radius:9px;font-weight:700;cursor:pointer}button.ghost{background:transparent;border:1px solid var(--line);color:var(--text);padding:9px 14px;border-radius:9px;cursor:pointer}
+.pol{display:flex;gap:8px;flex-wrap:wrap}.pol label{flex-direction:row;align-items:center;gap:6px;border:1px solid var(--line);padding:6px 10px;border-radius:8px;color:var(--text);cursor:pointer}
+.cells{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(440px,1fr))}
+svg text{fill:var(--muted);font-size:11px}
+.legend span{display:inline-block;margin-right:12px;font-size:12px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+details{margin:6px 0}summary{cursor:pointer;color:var(--accent)}
+.explain p{margin:6px 0 10px}.explain code{background:var(--panel2);padding:1px 5px;border-radius:4px;font-family:var(--mono);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Society Harness</h1><div class="sub">the Society of LLMs agents under runtime service-graph reservation — with and without the harness</div></div>
+  <nav><button data-tab="results" class="active">Results</button><button data-tab="live">Live</button><button data-tab="explain">How it works</button></nav>
+</header>
+<main>
+
+<section id="results" class="active">
+  <div class="grid g4" id="kpis"></div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3>Runs completed of 36 (3 seeds × 12)</h3><div id="chart-completed"></div></div>
+    <div class="card"><h3>Why runs were lost</h3><div id="chart-lost"></div></div>
+    <div class="card"><h3>Dollars: spent, and spent on runs that never completed</h3><div id="chart-usd"></div></div>
+    <div class="card"><h3>Completion time of finished runs (median, society seconds)</h3><div id="chart-p50"></div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>Every cell, paired by seed (same arrivals, same recorded futures)</h3><div id="table" style="overflow:auto"></div>
+    <p class="muted" style="font-size:12px;margin:8px 0 0">tct = submission to ship decision (deferred runs include their wait); throughput = completed runs per hour of the cell's makespan; 429s = refusals of the cloud tier when nobody coordinates; refused = payments the platform could not collect; waste = share of dollars spent on runs that never completed; leases = reservations the Reserver issued.</p></div>
+  <div class="card" style="margin-top:14px"><h3>Reading</h3><div id="reading" class="explain"></div></div>
+</section>
+
+<section id="live">
+  <div class="card">
+    <h3>Launch — the same seed for every policy: identical arrivals and identical recorded futures</h3>
+    <form class="launch" id="launch" onsubmit="return false">
+      <div class="pol" id="pols"></div>
+      <label>seed<input id="seed" type="number" value="1" min="0"></label>
+      <label>runs<input id="runs" type="number" value="8" min="1" max="40"></label>
+      <label>mean inter-arrival (s)<input id="arrival" type="number" value="20" min="1"></label>
+      <label>DAG<select id="dag"></select></label>
+      <label>time scale (society s per wall s)<input id="scale" type="number" value="20" min="1"></label>
+      <label>tenant budget $<input id="busd" type="number" value="1.5" step="0.1" min="0"></label>
+      <label>refill $/h<input id="bph" type="number" value="6" step="0.5" min="0"></label>
+      <label>cloud concurrency<input id="conc" type="number" value="3" min="1"></label>
+      <label>cloud RPM<input id="rpm" type="number" value="6" min="1"></label>
+      <label>local slots<input id="slots" type="number" value="1" min="1"></label>
+      <button class="primary" id="go">Launch</button><button class="ghost" id="stopb">Stop</button>
+      <span id="lstatus" class="muted"></span>
+    </form>
+  </div>
+  <div class="cells" id="cells" style="margin-top:14px"></div>
+  <div class="card" style="margin-top:14px"><h3>Event feed</h3><div class="feed" id="feed"></div></div>
+</section>
+
+<section id="explain" class="explain">
+  <div class="grid g2">
+    <div class="card"><h2>What runs here</h2>
+      <p>The agents are the <b>Society of LLMs</b> project's own code: four roles (backend, frontend, integration, ship) that add a login feature to a FastAPI app under a DAG runner. Every node's output is a typed note in a versioned KV store; a gate must approve it before downstream nodes can read it; a rejected attempt is fed back as a retry prompt, three times, then the run escalates to a human.</p>
+      <p>The gates are real: <code>output_schema</code>, <code>files_written</code>, <code>endpoint_present</code>, <code>backend_tests</code> (pytest), <code>uses_endpoint</code>, <code>schema_diff</code> (the cross-vendor contract), <code>merged_tests</code> (pytest on the merged tree), <code>decision_consistency</code>, and the Jev gate — here the deterministic <code>jev_rule</code> stand-in (it says so in every verdict; <code>remote</code> uses TypeSafe's System One through the repository's client when a key is present).</p>
+      <p><b>The LLMs are not in the loop.</b> A replay worker does each role's work by script (the same edits and test runs the project's own e2e stub makes) and draws its <i>consumption</i> — seconds on the model tier, tokens, dollars, and whether the attempt comes back in a shape a gate rejects — from the project's 23 recorded runs. A draw is keyed by (seed, run, node, attempt), so every policy faces the same futures.</p>
+    </div>
+    <div class="card"><h2>The world</h2>
+      <p>Time is in <b>society seconds</b> (the recordings' seconds; wall-clock = that ÷ scale). Shared by every run: the <b>cloud model tier</b> (concurrent requests, requests per minute, tokens per minute, priced per token — exceeding it is a 429), the <b>local coder</b> (one resident model: callers queue), the <b>sandbox pool</b> (test runs queue), and one <b>budget bucket per tenant</b> in dollars, refilled per hour; the platform refuses what it cannot pay for. Twelve runs arrive over ~4 minutes to three tenants — the cloud tier saturates, the budget binds.</p>
+      <h2 style="margin-top:14px">Four policies, one gateway</h2>
+      <p><b>off</b> — nobody coordinates. The cloud tier answers 429; the SDK retries twice with backoff and gives up; the executor burns the attempt; three burned attempts escalate the run. Payments are collected at the end of a call: a run can be refused mid-way after its earlier nodes were paid for.</p>
+      <p><b>gate</b> — the project's own semaphore generalised: FIFO queueing at the gateway, nothing issued that the headers say would 429, a tenant pauses under a fixed 10 % of its budget. No prediction.</p>
+      <p><b>needs</b> — the Reserver. Per role × provider × retry quantiles of duration, tokens and cost, warm-started from the deployment's lineage and learned on the observation stream, give every in-flight run a predicted schedule of its remaining nodes; the schedules sum to a demand forecast whose excess over capacity is the <i>pressure</i> that prices reservations. Leases on the downstream tier under an expected-value gate; shortest-predicted-first on a model queue deeper than its slots, weighted fair queuing otherwise; <b>workflow-level budget pacing</b>: a run is admitted only when the tenant's balance, net of what in-flight runs will still spend, covers its predicted spend-to-completion — <i>finish what you started</i>; a feedback loop corrects the forecast's bias, tightens the floor after any refusal and weights tenants by served share.</p>
+      <p><b>oracle</b> — the same rules with the sampled futures read through a guarded <code>peek</code> that raises for anyone else: the clairvoyant bound.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);const POLC={off:'var(--bad)',gate:'var(--warn)',needs:'var(--ok)',oracle:'var(--purple)'};
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('main section').forEach(s=>s.classList.toggle('active',s.id===b.dataset.tab));});
+const fmt=(x,d=0)=>x==null||Number.isNaN(x)?'–':Number(x).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
+
+// ---------- results ----------
+function barChart(el,series,opts={}){const W=el.clientWidth||520,H=opts.h||150,pad={l:8,r:8,t:8,b:26};const max=opts.max||Math.max(...series.flatMap(s=>s.vals))*1.12||1;
+ const n=series[0].vals.length,groups=series[0].labels,gw=(W-pad.l-pad.r)/n,bw=Math.min(46,gw/(series.length+0.6));let svg=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+ groups.forEach((g,i)=>{const x0=pad.l+i*gw+(gw-bw*series.length)/2;series.forEach((s,j)=>{const v=s.vals[i]||0,h=(H-pad.t-pad.b)*v/max,x=x0+j*bw,y=H-pad.b-h;
+  svg+=`<rect x="${x}" y="${y}" width="${bw-3}" height="${h}" rx="3" fill="${s.color||POLC[g]||'var(--accent)'}" opacity="${s.opacity||1}"><title>${g} ${s.name}: ${fmt(v,s.dec||0)}</title></rect><text x="${x+(bw-3)/2}" y="${y-3}" text-anchor="middle">${s.fmt?s.fmt(v):fmt(v,s.dec||0)}</text>`;});
+  svg+=`<text x="${pad.l+i*gw+gw/2}" y="${H-8}" text-anchor="middle" style="fill:${POLC[g]||'var(--muted)'};font-weight:600">${g}</text>`;});
+ el.innerHTML=svg+'</svg>'+(series.length>1?`<div class="legend">${series.map(s=>`<span><i style="background:${s.color};opacity:${s.opacity||1}"></i>${s.name}</span>`).join('')}</div>`:'');}
+async function loadResults(){const r=await (await fetch('/api/results')).json();const S=r.summary,P=['off','gate','needs','oracle'].filter(p=>S[p]);if(!P.length){$('#kpis').innerHTML='<div class="card">'+(r.note||'no results')+'</div>';return;}
+ $('#kpis').innerHTML=P.map(p=>{const s=S[p];return `<div class="card"><h3 style="color:${POLC[p]}">${p}</h3><div class="kpi"><div><b>${s.completed}/${s.runs}</b><span>runs completed</span></div><div><b>${s.refused_429}</b><span>429s</span></div><div><b>${s.budget_errs}</b><span>refused payments</span></div><div><b>$${fmt(s.waste_usd,2)}</b><span>wasted of $${fmt(s.usd,2)}</span></div><div><b>${fmt(s.mean.tct_p50,0)} s</b><span>median completion</span></div><div><b>${fmt(s.mean.throughput_rph,0)}/h</b><span>throughput</span></div></div>${r.wins&&r.wins[p]?`<div class="muted" style="font-size:12px;margin-top:6px">paired vs off: fewer failures ${r.wins[p].failure_rate}/${r.wins[p].n} seeds · less waste ${r.wins[p].usd_waste_frac}/${r.wins[p].n} · higher throughput ${r.wins[p].throughput_rph}/${r.wins[p].n}</div>`:''}</div>`;}).join('');
+ barChart($('#chart-completed'),[{name:'completed',labels:P,vals:P.map(p=>S[p].completed)}],{max:Math.max(...P.map(p=>S[p].runs))*1.15});
+ barChart($('#chart-lost'),[{name:'429 refusals (cloud tier)',labels:P,vals:P.map(p=>S[p].refused_429),color:'var(--bad)'},{name:'payments refused',labels:P,vals:P.map(p=>S[p].budget_errs),color:'var(--warn)'},{name:'attempts burned',labels:P,vals:P.map(p=>S[p].provider_errs),color:'var(--accent)'},{name:'runs escalated',labels:P,vals:P.map(p=>S[p].escalated),color:'#fff',opacity:.7}]);
+ barChart($('#chart-usd'),[{name:'spent $',labels:P,vals:P.map(p=>S[p].usd),color:'var(--accent)',dec:2,fmt:v=>'$'+fmt(v,2)},{name:'wasted $',labels:P,vals:P.map(p=>S[p].waste_usd),color:'var(--bad)',dec:2,fmt:v=>'$'+fmt(v,2)}]);
+ barChart($('#chart-p50'),[{name:'median tct (s)',labels:P,vals:P.map(p=>S[p].mean.tct_p50)}]);
+ const cols=[['variant','policy'],['seed','seed'],['completed','done'],['escalated','esc.'],['failure_rate','fail'],['tct_p50','p50 s'],['tct_p99','p99 s'],['throughput_rph','runs/h'],['refused_429','429s'],['provider_errs','burned'],['budget_errs','refused'],['usd','$'],['usd_waste_frac','waste'],['wait_p50','wait p50'],['wait_p99','wait p99'],['leases','leases'],['srpt_orders','srpt'],['budget_waits','pacing waits'],['go_rate','go'],['wall_s','wall s']];
+ const rows=[...r.rows].sort((a,b)=>a.seed-b.seed||P.indexOf(a.variant)-P.indexOf(b.variant));
+ $('#table').innerHTML='<table><tr>'+cols.map(c=>`<th>${c[1]}</th>`).join('')+'</tr>'+rows.map(x=>`<tr class="${x.variant}">`+cols.map(c=>{let v=x[c[0]];if(typeof v==='number')v=fmt(v,['failure_rate','usd_waste_frac','go_rate'].includes(c[0])?2:c[0]==='usd'?2:0);return `<td>${v??'–'}</td>`;}).join('')+'</tr>').join('')+'</table>';
+ const o=S.off,g=S.gate,n=S.needs,or=S.oracle;
+ $('#reading').innerHTML=`<p><b>Without the harness (off)</b>: ${o?`${o.completed} of ${o.runs} runs finished. ${o.refused_429} calls were refused by the cloud tier; the SDK's retries a few seconds apart cannot outwait a saturated concurrency cap, the executor burns the attempt, three burned attempts escalate the run — the failure the project's own <code>mixed1</code> recording shows. $${fmt(o.waste_usd,2)} of $${fmt(o.usd,2)} went to runs that never completed.`:'–'}</p>
+ <p><b>Reactive gate</b>: ${g?`${g.completed} of ${g.runs}; every 429 gone, but ${g.budget_errs} payments refused mid-run — the gate starts runs it cannot finish and wastes their earlier spend ($${fmt(g.waste_usd,2)}).`:'–'}</p>
+ <p><b>Needs (the harness)</b>: ${n?`${n.completed} of ${n.runs}, ${n.refused_429} 429s, ${n.budget_errs} refused payments, $${fmt(n.waste_usd,2)} wasted. Runs are deferred until their predicted spend-to-completion fits, so their completion time includes the wait (median ${fmt(n.mean.tct_p50)} s vs the gate's ${g?fmt(g.mean.tct_p50):'–'} s over a smaller set of survivors).`:'–'} <b>Oracle</b>: ${or?`${or.completed} of ${or.runs}, median ${fmt(or.mean.tct_p50)} s — the gap to needs is the price of predicting costs from ${'a'} lineage of 23 runs instead of knowing them.`:'–'}</p>
+ <p class="muted">Caveats: the predictor is warmed on one half of the recorded runs and the replay draws from the other (right distribution family, sampling noise, no drift); the agents' behaviour is scripted, only their consumption is real; the Jev gate is the rule stand-in; leases rarely pay on a chain-shaped DAG and the expected-value gate mostly skips them. Three seeds: directional, not a significance claim.</p>`;}
+loadResults();
+
+// ---------- live ----------
+let cfg=null,cells={},feedN=0,es=null;
+async function loadConfig(){cfg=await (await fetch('/api/config')).json();$('#pols').innerHTML=cfg.policies.map(p=>`<label style="color:${POLC[p]}"><input type="checkbox" value="${p}" ${['off','needs'].includes(p)?'checked':''}>${p}</label>`).join('');$('#dag').innerHTML=cfg.dags.map(d=>`<option>${d}</option>`).join('');}
+loadConfig();
+$('#go').onclick=async()=>{const policies=[...document.querySelectorAll('#pols input:checked')].map(i=>i.value);const body={policies,seed:+$('#seed').value,runs:+$('#runs').value,arrival_s:+$('#arrival').value,dag:$('#dag').value,scale:+$('#scale').value,
+ world:{budget:{usd:+$('#busd').value,per_hour:+$('#bph').value},anthropic:{concurrency:+$('#conc').value,rpm:+$('#rpm').value},ollama:{slots:+$('#slots').value}}};
+ const r=await fetch('/api/launch',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const j=await r.json();$('#lstatus').textContent=r.ok?`running ${policies.join(' vs ')} on seed ${body.seed}`:(j.detail||'error');
+ if(r.ok){cells={};$('#cells').innerHTML='';$('#feed').innerHTML='';feedN=0;policies.forEach(p=>ensureCell(p));}};
+$('#stopb').onclick=async()=>{await fetch('/api/stop',{method:'POST'});$('#lstatus').textContent='stopped';};
+function ensureCell(p){if(cells[p])return cells[p];const d=document.createElement('div');d.className='card';d.innerHTML=`<h2 style="color:${POLC[p]}">${p} <span class="chip run" id="st-${p}">running</span> <span class="muted mono" id="t-${p}"></span></h2><div class="kpi" id="k-${p}"></div><h3 style="margin-top:10px">Resources · queues · leases</h3><div id="res-${p}"></div><h3 style="margin-top:10px">Tenant budgets</h3><div id="bud-${p}"></div><h3 style="margin-top:10px">Runs</h3><div id="runs-${p}"></div><details><summary>controller</summary><div class="mono" id="ctl-${p}"></div></details>`;$('#cells').appendChild(d);cells[p]={el:d,nodes:{}};return cells[p];}
+const NODES=['backend','frontend','integration','ship'];
+function renderSnapshot(s){const c=ensureCell(s.policy);$('#t-'+s.policy).textContent=`t = ${fmt(s.t)} s`;const st=$('#st-'+s.policy);st.textContent=s.status;st.className='chip '+(s.status==='running'?'run':s.status==='done'?'ok':'bad');
+ const d=s.decisions,runs=Object.values(s.runs),done=runs.filter(r=>r.status==='completed').length,esc=runs.filter(r=>r.status==='escalated').length;
+ $('#k-'+s.policy).innerHTML=`<div><b>${done}</b><span>completed</span></div><div><b style="color:${esc?'var(--bad)':'inherit'}">${esc}</b><span>escalated</span></div><div><b>${d.refused_429}</b><span>429s</span></div><div><b>${d.refused_budget}</b><span>refused $</span></div><div><b>${d.run_deferred}</b><span>runs deferred</span></div><div><b>${s.ledger.issued}</b><span>leases</span></div><div><b>${d.srpt_orders}</b><span>srpt orders</span></div><div><b>$${fmt(runs.reduce((a,r)=>a+r.spent,0),2)}</b><span>spent</span></div>`;
+ $('#res-'+s.policy).innerHTML=Object.entries(s.resources).map(([n,r])=>{const pct=Math.min(100,100*r.used/r.capacity);const lease=r.leases.length?`<span class="chip wait">${r.leases.length} lease${r.leases.length>1?'s':''}: ${r.leases.map(l=>`${l.run} ×${l.amt} [${l.start>0?'+'+l.start:'now'}, +${l.end}]`).join('; ')}</span>`:'';
+  const spark=r.demand.length?sparkline(r.demand,r.capacity):'';return `<div class="row"><span class="lbl">${n}</span><div class="bar"><i class="${pct>=100?'bad':pct>66?'warn':'ok'}" style="width:${pct}%"></i></div><span class="val">${r.used}/${r.capacity} · ${r.waiters.length} waiting${r.rpm_frac<1?` · rpm ${Math.round(r.rpm_frac*100)}%`:''}</span></div><div class="muted mono" style="margin:-2px 0 6px 160px;font-size:11.5px">${r.holders.length?'holding: '+r.holders.join(', '):'idle'}${r.waiters.length?' · queue: '+r.waiters.join(', '):''} ${lease} ${spark}</div>`;}).join('')+(Object.keys(s.tpm).length?`<div class="muted mono" style="font-size:11.5px">tokens-per-minute bucket: ${Object.entries(s.tpm).map(([k,v])=>`${k} ${fmt(v)}`).join(', ')}</div>`:'');
+ $('#bud-'+s.policy).innerHTML=Object.entries(s.budgets).map(([n,b])=>{const pct=100*b.level/b.capacity;return `<div class="row"><span class="lbl">${n}</span><div class="bar"><i class="${pct<15?'bad':pct<40?'warn':'ok'}" style="width:${pct}%"></i></div><span class="val">$${fmt(b.level,2)} / $${fmt(b.capacity,2)} · spent $${fmt(b.spent,2)}${b.refused?` · <span style="color:var(--bad)">${b.refused} refused</span>`:''}${s.loop?` · floor ${Math.round(b.floor*100)}%`:''}</span></div>`;}).join('')||'<span class="muted">no budgets</span>';
+ const ids=Object.keys(s.runs).sort();const arr=s.arrivals||[];
+ $('#runs-'+s.policy).innerHTML=ids.map(id=>{const r=s.runs[id];const res=s.results[id];const stat=res?res.status:r.status;const chip=stat==='completed'?`<span class="chip ok">completed${res&&res.go===false?' · no-go':''}</span>`:stat==='escalated'?`<span class="chip bad">escalated</span>`:`<span class="chip run">running ${fmt(r.age)} s</span>`;
+  const nodes=NODES.map((n,i)=>{const st=cells[s.policy].nodes[id+'/'+n]||{};let cls='',lab='';if(r.done.includes(n)){cls='approved';lab='approved';}else if(r.inflight.includes(n)){cls='running';lab='on '+(st.provider||'model');}else if(r.judging.includes(n)){cls='judging';lab='gates…';}else if(st.state==='queued'){cls='queued';lab='queued '+(st.res||'');}else if(st.state==='rejected'){cls='rejected';lab='rejected';}else if(stat==='escalated'&&r.attempts[n]&&!r.done.includes(n)){cls='escalated';lab='escalated';}
+   const att=r.attempts[n]?`a${r.attempts[n]}`:'';return `<div class="node ${cls}"><b>${n}</b><small>${lab||'waiting'} ${att}${st.usd?` · $${fmt(st.usd,2)}`:''}${st.wait?` · waited ${fmt(st.wait)} s`:''}</small></div>${i<3?'<span class="arrow">→</span>':''}`;}).join('');
+  return `<div style="margin:6px 0 10px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:4px"><b class="mono">${id}</b> <span class="muted">${r.tenant}</span> ${chip} <span class="muted mono">$${fmt(r.spent,2)}</span>${res&&res.reason?`<span class="muted" style="font-size:12px">${res.reason.slice(0,110)}</span>`:''}</div><div class="dag">${nodes}</div></div>`;}).join('')||'<span class="muted">waiting for the first arrival…</span>';
+ $('#ctl-'+s.policy).innerHTML=`decisions ${JSON.stringify(d)}<br>ledger ${JSON.stringify(s.ledger)}${s.loop?`<br>feedback loop ${JSON.stringify(s.loop)}`:''}`;
+ if(s.row){st.textContent='done';}}
+function sparkline(d,cap){const W=160,H=26,max=Math.max(cap,...d)*1.1||1;const pts=d.map((v,i)=>`${(i/(d.length-1))*W},${H-(v/max)*H}`).join(' ');const capY=H-(cap/max)*H;return `<svg width="${W}" height="${H}" style="vertical-align:middle;margin-left:8px"><title>forecast demand over the next ${d.length*5} s (line = capacity)</title><line x1="0" x2="${W}" y1="${capY}" y2="${capY}" stroke="var(--line)"/><polyline points="${pts}" fill="none" stroke="var(--purple)" stroke-width="1.5"/></svg><span class="muted">forecast</span>`;}
+function feed(t,p,cls,msg){const f=$('#feed');if(feedN++>1500){f.innerHTML='';feedN=0;}const d=document.createElement('div');d.innerHTML=`<span class="t">${fmt(t)} s</span><span class="p" style="color:${POLC[p]}">${p}</span><span class="${cls}">${msg}</span>`;f.prepend(d);}
+function onEvent(e){const p=e.policy;if(e.kind==='snapshot'){renderSnapshot(e);return;}if(!p)return;const c=ensureCell(p);const N=c.nodes;const key=e.run_id?e.run_id+'/'+e.node_id:e.sid;
+ switch(e.kind){
+  case 'gw:run_start':feed(e.t,p,'info',`run ${e.run_id} submitted (${e.tenant})`);break;
+  case 'gw:step_ready':if(e.kind_==='chat'||e.kind==='gw:step_ready'){N[key]=Object.assign(N[key]||{},{state:'queued',res:e.res.replace('model.','')});}break;
+  case 'gw:step_start':if(e.kind==='gw:step_start'){N[key]=Object.assign(N[key]||{},{state:'running',provider:e.res.replace('model.',''),wait:e.wait});if(e.wait>5)feed(e.t,p,'info',`${e.sid} admitted to ${e.res} after ${fmt(e.wait)} s${e.est_service?` (predicted ${fmt(e.est_service)} s)`:''}`);}break;
+  case 'gw:step_end':if(e.res.startsWith('model')){N[key]=Object.assign(N[key]||{},{state:'judging',usd:e.usd});feed(e.t,p,e.outcome==='ok'?'':'bad',`${e.sid} ${e.outcome==='ok'?'finished':'FAILED: '+e.outcome} on ${e.res} in ${fmt(e.duration)} s · ${fmt(e.tokens_in)} tok in · $${fmt(e.usd,3)}`);}break;
+  case 'gw:refused':feed(e.t,p,'bad',`429 ${e.kind_||e.kind} → ${e.sid}: ${e.res} refused (${e.kind})`);break;
+  case 'gw:timeout':feed(e.t,p,'bad',`${e.sid} gave up after queueing 900 s on ${e.res}`);break;
+  case 'gw:verdict':N[key]=Object.assign(N[key]||{},{state:e.approved?'approved':'rejected'});feed(e.t,p,e.approved?'ok':'warn',`${e.run_id}/${e.node_id} ${e.approved?'approved':'rejected'+(e.gate?' by '+e.gate:'')}`);break;
+  case 'run:gate':if(e.verdict!=='approved')feed(e.t,p,'warn',`${e.run_id}/${e.node_id} gate ${e.gate}: ${e.verdict} — ${(e.reason||'').slice(0,100)}`);break;
+  case 'run:escalated':feed(e.t,p,'bad',`${e.run_id}/${e.node_id} ESCALATED: ${(e.reason||'').slice(0,120)}`);break;
+  case 'gw:run_end':feed(e.t,p,e.status==='completed'?'ok':'bad',`run ${e.run_id} ${e.status} after ${fmt(e.duration)} s, $${fmt(e.spent,2)}`);break;
+  case 'cell_done':feed(e.row.makespan_s,p,'ok',`cell finished: ${e.row.completed}/${e.row.runs} completed, ${e.row.refused_429} 429s, ${e.row.budget_errs} refused payments, $${fmt(e.row.usd,2)} spent, waste ${Math.round(e.row.usd_waste_frac*100)}%`);loadResults();break;
+  case 'cell_error':feed(0,p,'bad',`cell error: ${e.error}`);break;
+ }}
+function connect(){es=new EventSource('/api/stream');es.onmessage=m=>{try{onEvent(JSON.parse(m.data));}catch(err){console.error(err);}};es.onerror=()=>{es.close();setTimeout(connect,1500);};}
+connect();
+fetch('/api/state').then(r=>r.json()).then(s=>{Object.values(s.cells||{}).forEach(c=>{if(c)renderSnapshot(c);});});
+</script>
+</body>
+</html>

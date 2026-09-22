@@ -1,6 +1,6 @@
 # Society Harness — runtime service-graph reservation for concurrent agentic workflows
 
-A simulator of societies of concurrent agentic workflows contending for shared capacity, and a controller that predicts each workflow's coming tool, model and service needs and reserves capacity for them without over-allocation, starvation or workflow failure. Python 3.12 + numpy, nothing else.
+A simulator of societies of concurrent agentic workflows contending for shared capacity, and a controller that predicts each workflow's coming tool, model and service needs and reserves capacity for them without over-allocation, starvation or workflow failure. Python 3.12 + numpy for the simulator; `society/` (the harness on the Society of LLMs agents) adds pydantic, jsonschema, fastapi and pytest via `uv sync --group society`.
 
 Design notes: [SERVICE_GRAPH_RESERVATION.md](SERVICE_GRAPH_RESERVATION.md) (the problem, hypotheses and literature) and [PREDICTOR_DESIGN.md](PREDICTOR_DESIGN.md) (the predictor and the Reserver that consumes it). The evaluation results referred to below live in the summary CSVs under `data/synthetic/` and the model reports under `data/models/`; `rung0/needs_tables.py` and `rung0/compare.py` turn them into tables and paired statistics.
 
@@ -30,6 +30,40 @@ Design notes: [SERVICE_GRAPH_RESERVATION.md](SERVICE_GRAPH_RESERVATION.md) (the 
 - `RemoteSystemOne` is a client for the real TypeSafe API (request/response shape, bearer auth, `JEV_API_BASE` for direct or LiteLLM pass-through use, retries honouring `retry-after`, usage and cost accounting). It has been tested only against a canned response: **no call to TypeSafe was ever made from this project**, because no API key was available. `agentsim evaluate-jev --remote` is the first thing to run once one exists.
 - `LocalSystemOne` is ours: one sparse multinomial per question over hashed n-grams of the state, log-loss trained and temperature-calibrated on held-out sessions. It reproduces the *contract* (typed answers, calibrated probabilities, everything answered at once) so the integration could be built and measured, not the model's capability: it reads hashed tokens, the real Jev reads text with frontier understanding. **Every Jev number ever measured here is the stand-in's.**
 - The question catalogue, the `ext.jev` channel (rate limits, latency, batching), the live calibration judge and the way answers enter the controller are ours and apply to either model unchanged.
+
+## The harness on the Society of LLMs (`society/`)
+
+The controller was built on a simulator. `society/` puts it in front of a **real multi-agent system**: the agents of the user's Society of LLMs project (`society-of-llms`, its `society/` package) — five software-team roles (backend, frontend, integration, ship, planner) that build a login feature into a FastAPI app under a DAG runner with deterministic gates (pytest, schema diff, route presence, decision consistency), versioned KV handoff (`:current` moves only when a gate approves), a retry loop with the rejection fed back, and a System One quality gate. The clone keeps the agents' own code — `society/agents`, `runner`, `gates`, `memory` — and replaces only the LLM providers:
+
+- **`providers/replay.py` — the agents without the LLMs.** A `ReplayWorker` does each role's work by script (the same edits, test runs and reports the project's own e2e stub makes, so every gate runs for real — pytest included) while its *consumption* (seconds on the model tier, input/output tokens, dollars, and whether the attempt comes back in a shape a gate rejects) is drawn from the project's **23 recorded runs** (`data/society/lineage.jsonl`, 90 attempts on Claude Opus 5 and Devstral). Draws are keyed by (seed, run, node, attempt): every policy sees the same futures.
+- **`harness/world.py`** — the shared world in *society seconds* (recorded seconds ÷ `scale` = wall-clock): the cloud model tier (concurrency, RPM, TPM, priced per token; api-like → 429), the local coder (one resident model → queue), the sandbox pool (test runs → queue), one budget bucket per tenant. The physics classes are the simulator's (`agentsim/resources.py`).
+- **`harness/gateway.py`** — the harness in wall-clock, four policies over identical questions: **`off`** (nobody coordinates: 429s, SDK retries, burned attempts, the platform bills at call end and refuses what the tenant cannot pay), **`gate`** (the project's own `local_slots` semaphore generalised: FIFO queueing, header-based pauses, a fixed 10 % budget floor — no prediction), **`needs`** (the Reserver: per role × provider × retry quantiles learned from the observation stream and warm-started from the deployment's lineage log; a predicted schedule of each run's remaining nodes summed into a demand `Forecast` whose excess is the pressure that prices leases; downstream-tier leases and gang leases under an expected-value gate; SRPT on a model queue deeper than its slots, weighted VTFQ otherwise; **workflow-level budget pacing** — a run is admitted only when the tenant's balance, net of what in-flight runs are predicted to still spend, covers its predicted spend-to-completion: *finish what you started*; the feedback loop's PI forecast correction, AIMD floor and fairness weights; System One as an optional annotator whose answers count only while the online judge finds them calibrated), **`oracle`** (the same rules with the sampled futures — the clairvoyant bound; `ReplayTable.peek` raises for anyone else).
+- **`harness/governed.py`** — the three seams: a worker wrapper (model-tier unit + budget around every node), a command-gate wrapper and a tool hook (a sandbox unit around every pytest), a runner subclass (registers each run's service graph; verdicts flow back).
+- **`web/server.py`** — the dashboard: the bench's results with paired wins, a live launch of any policies side by side on one seed (run cards per DAG, resources, queues, leases, tenant budgets, the forecast, the feedback loop, a narrated event feed over server-sent events), and the explanation.
+- **`gates/jev.py`** — the project's Jev gate re-pointed at this repository's one client: `remote` = TypeSafe's System One through `RemoteSystemOne`; `rule` = a deterministic stand-in that checks the report against the recorded gate evidence and names itself `jev_rule` in every verdict.
+
+```bash
+uv sync --group society
+uv run python -m society.web.server --port 8020                                # the dashboard: results, live off-vs-needs launches, the explanation
+uv run python -m pytest -q -c society/tests/pytest.ini society/tests          # the agents' own tests (33), in their new home
+uv run python -m society.harness.bench --policies off,gate,needs,oracle --seeds 1,2,3 --runs 12 --arrival-s 20
+uv run python rung0/needs_tables.py data/society/bench/bench.csv --axis arrival_s --baseline off --oracle oracle
+```
+
+**With and without** (3 paired seeds, `data/society/bench/bench.csv`). Twelve login-feature runs submitted over ~4 minutes to three tenants ($1.50 each, refilled at $6/h) sharing a cloud tier of 3 concurrent requests, 6 requests and 150 k tokens per minute, one local coder and two sandboxes. Paired by seed; society time at scale 20.
+
+**arrival_s = 20.0** (n = 3 paired seeds; * = significant after Holm vs `off`; wins = per-seed paired wins on failure / p50 / p99 / throughput)
+
+| variant | failure | p50 s | p99 s | req·h⁻¹ | timeouts | Jain | refused | $/req | $ wasted | 429s | burned attempts | leases | wins |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| off | 0.583 | 278 | 395 | 33 | 0 | 0.64 | 6 | 0.817 | 0.403 | 60 | 24 | 0 |  |
+| gate | 0.083 | 986 | 1,502 | 26 | 0 | 0.99 | 6 | 0.694 | 0.152 | 0 | 6 | 0 | 3/0/0/0 of 3 |
+| needs | 0.000 | 1,189 | 1,531 | 28 | 0 | 1.00 | 0 | 0.566 | 0.000 | 0 | 1 | 4 | 3/0/0/0 of 3 |
+| oracle | 0.000 | 517 | 1,376 | 29 | 1 | 1.00 | 1 | 0.575 | 0.000 | 0 | 1 | 1 | 3/0/0/0 of 3 |
+
+Totals over the 3 seeds: **off** 15/36 runs completed, 179 429s, 18 refused payments, $12.03 spent of which 40 % on runs that never completed; **gate** 33/36 runs completed, 0 429s, 17 refused payments, $22.70 spent of which 16 % on runs that never completed; **needs** 36/36 runs completed, 0 429s, 1 refused payments, $20.37 spent of which 0 % on runs that never completed; **oracle** 36/36 runs completed, 0 429s, 2 refused payments, $20.68 spent of which 0 % on runs that never completed.
+
+What the numbers say: uncoordinated agents lose most runs to 429 bursts on the cloud tier — three SDK retries a few seconds apart cannot outwait a saturated concurrency cap, and the executor burns the attempt, exactly the failure the project's own `mixed1` recording shows. The reactive gate removes every 429 but still starts runs it cannot finish: the platform refuses a payment mid-run and the tenant's earlier spend on that run is wasted. The Reserver admits a run only when its predicted spend-to-completion fits, so nothing is refused and nothing is wasted — at the price of deferring runs (their completion time includes the wait). The oracle shows what exact futures would add. Caveats, stated plainly: the predictor is warmed on one half of the recorded runs and the replay draws from the other, so it sees the right distribution family with sampling noise but no drift; the agents' *behaviour* is scripted (the LLMs are not in the loop), only their consumption is real; the Jev gate is the rule stand-in (`jev_rule`) in these runs; leases rarely pay on a chain-shaped DAG, and the expected-value gate mostly skips them; with three seeds nothing can reach significance under the exact Wilcoxon test (floor p = 0.25) — the wins columns are directional, and `--seeds 1,2,3,4,5,6,7,8,9,10` is the run that could settle it.
 
 ## Code
 
@@ -62,6 +96,15 @@ scenarios/           api_coding, hosted_mixed, hosted_stress (B18), hosted_trace
                      19 grids (E1, hosted, pinned, predictability, snr, stress, round trip, rung-3 scoreboards, ablations, ship, tracelab);
                      knob_ranges.json + sampled/ (40, A8) + variants_ship.json / variants_needs*.json (sweep variants)
 rung0/               … plus headroom.py (sweep analysis) and tracelab_to_spans.py (real-trace adapter)
+society/             the Society of LLMs agents (cloned) under the harness — see the section above
+  agents/            the five roles: prompts, output schemas, gates, KV extractors (make_workers wires replay workers)
+  runner/ gates/ memory/   the project's DAG runner, deterministic gates + executor + retry loop, versioned KV + lineage
+  providers/         Worker protocol, sandboxed tools, FallbackWorker, replay.py (scripted roles, recorded consumption)
+  harness/           world.py (society seconds, shared resources), gateway.py (off / gate / needs / oracle), governed.py (seams), bench.py
+  web/               the dashboard (FastAPI + one page): recorded results, live side-by-side launches streamed over SSE, how it works
+  examples/          the seeded FastAPI todo app and the login / OTP DAGs
+  tests/             the project's own tests (33), adapted to the clone
+data/society/        lineage.jsonl (the 23 recorded runs the replay draws from), bench/*.csv (with/without results)
 data/real/           real traces (git-ignored): tracelab/ (TraceLab gz + span conversions)
 data/recipes.json    structure seeds        data/marginals.json  quantity seeds (provenance inside)     data/fitted/  fitted from synthetic traces (C2 round trip)
 data/recipes_multiagent.json  the orchestrator recipe (spawn)     data/recipes_mcp.json + marginals_mcp.json  tools on MCP servers / a GPU pool

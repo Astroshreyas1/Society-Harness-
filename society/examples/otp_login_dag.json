@@ -1,0 +1,39 @@
+{
+  "goal": "Login with OTP-based email verification for the Todo app",
+  "nodes": [
+    {
+      "id": "backend",
+      "agent": "backend",
+      "task": "Add OTP email login to app/main.py with two endpoints.\n1) POST /auth/request-otp — body {\"email\": string}. Validate it looks like an email (contains '@' and '.'), else raise HTTPException(status_code=422, detail=\"invalid email\"). Generate a 6-digit numeric code with secrets.randbelow, store it in an in-memory dict keyed by email with a 5-minute expiry (time.time()), and 'send' it by logging it with print(f\"OTP for {email}: {code}\"). Reply 200 with {\"sent\": true, \"email\": string, \"devOtp\": string} — devOtp is the code itself, included ONLY because there is no mail server in this demo; add a comment saying so.\n2) POST /auth/verify-otp — body {\"email\": string, \"otp\": string}. If a non-expired code exists for that email and matches, delete it and reply 200 with {\"token\": string, \"email\": string} where token = secrets.token_hex(16). Otherwise raise HTTPException(status_code=401, detail=\"invalid or expired otp\") (FastAPI returns {\"detail\": \"invalid or expired otp\"} — do not wrap detail in another dict).\nAdd tests in tests/test_otp.py: request then verify succeeds using devOtp; wrong otp gives 401; a used otp cannot be reused; invalid email gives 422. Run the full test suite and make it pass. Publish the request and response JSON Schemas of the VERIFY endpoint (that is the contract the UI consumes), and list both endpoints.",
+      "depends_on": [],
+      "inputs": [],
+      "outputs": ["backend:schema", "backend:request_schema", "backend:endpoint"]
+    },
+    {
+      "id": "frontend",
+      "agent": "frontend",
+      "task": "Add a two-step sign-in to static/index.html above the todo list. Step 1: an email field and a 'Send code' button that POSTs JSON {\"email\"} to /auth/request-otp; on success show 'Code sent to <email>' and reveal step 2 (for this demo, also show the devOtp from the response in a small muted hint so the presenter can type it). Step 2: a 6-digit code field and a 'Verify' button that POSTs to the backend verify endpoint given in context using EXACTLY the request field names from backend:request_schema, and reads EXACTLY the response field names from backend:schema. On success hide both steps, keep the token in memory, and show 'Signed in as <email>'. On 401 show 'Invalid or expired code' inline. Do not break the existing todo functionality. Report the response schema you coded against as schema_used, copied verbatim from context.",
+      "depends_on": ["backend"],
+      "inputs": ["backend:schema", "backend:request_schema", "backend:endpoint"],
+      "outputs": ["frontend:ui"]
+    },
+    {
+      "id": "integration",
+      "agent": "integration",
+      "task": "The backend/ and frontend/ trees have already been merged at the run root by the system. Run `python -m pytest -q tests` at the run root. If anything fails, fix only genuine integration issues without editing tests or the API. Report merged_files (from context), tests_passed, the last 20 lines of test output, and a summary.",
+      "depends_on": ["backend", "frontend"],
+      "inputs": ["backend:endpoint", "frontend:ui"],
+      "outputs": ["integration:report"],
+      "workspace": "."
+    },
+    {
+      "id": "ship",
+      "agent": "ship",
+      "task": "Verify the merged app at the run root is ready to ship OTP email login. Run the tests yourself, inspect app/main.py for both /auth endpoints and static/index.html for the two-step form calling them with matching field names, and note production risks (the devOtp in the response is a known demo-only shortcut: mention it as a note, not a blocker). Produce the go/no-go decision with a checklist.",
+      "depends_on": ["integration"],
+      "inputs": ["integration:report", "backend:endpoint"],
+      "outputs": ["ship:decision"],
+      "workspace": "."
+    }
+  ]
+}

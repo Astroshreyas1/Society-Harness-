@@ -1,0 +1,66 @@
+{
+  "goal": "Add a login feature to the Todo app",
+  "nodes": [
+    {
+      "id": "backend",
+      "agent": "backend",
+      "task": "Add a POST /login endpoint to app/main.py. Request body: {\"username\": string, \"password\": string}. Accept exactly one hard-coded demo user (username \"demo\", password \"demo123\") and reply 200 with {\"token\": string, \"userId\": integer} (userId is 1 for the demo user); any other credentials reply 401 by raising HTTPException(status_code=401, detail=\"invalid credentials\") (FastAPI then returns the JSON body {\"detail\": \"invalid credentials\"} \u2014 do not wrap detail in another dict). Generate the token with secrets.token_hex(16). Add tests in tests/test_login.py for the success and the 401 case. Run the full test suite and make it pass. Then publish the request and response JSON Schemas.",
+      "depends_on": [],
+      "inputs": [],
+      "outputs": [
+        "backend:schema",
+        "backend:request_schema",
+        "backend:endpoint"
+      ]
+    },
+    {
+      "id": "frontend",
+      "agent": "frontend",
+      "task": "Add a login form to static/index.html above the todo list: username and password fields plus a Login button. On submit, POST JSON to the backend endpoint given in context using EXACTLY the request field names from backend:request_schema, and read EXACTLY the response field names from backend:schema. On success, hide the form, store the token in memory, and show 'Signed in as <username>'. On 401, show 'Invalid credentials' inline. Do not break the existing todo functionality. Report the response schema you coded against as schema_used, copied verbatim from context.",
+      "depends_on": [
+        "backend"
+      ],
+      "inputs": [
+        "backend:schema",
+        "backend:request_schema",
+        "backend:endpoint"
+      ],
+      "outputs": [
+        "frontend:ui"
+      ]
+    },
+    {
+      "id": "integration",
+      "agent": "integration",
+      "task": "The backend/ and frontend/ trees have already been merged at the run root by the system. Run `python -m pytest -q tests` at the run root. If anything fails, fix only genuine integration issues without editing tests or the API. Report merged_files (from context), tests_passed, the last 20 lines of test output, and a summary.",
+      "depends_on": [
+        "backend",
+        "frontend"
+      ],
+      "inputs": [
+        "backend:endpoint",
+        "frontend:ui"
+      ],
+      "outputs": [
+        "integration:report"
+      ],
+      "workspace": "."
+    },
+    {
+      "id": "ship",
+      "agent": "ship",
+      "task": "Verify the merged app at the run root is ready to ship the login feature. Run the tests yourself, inspect app/main.py for the login endpoint and static/index.html for the login form and matching field names, and note any production risks. Produce the go/no-go decision with a checklist.",
+      "depends_on": [
+        "integration"
+      ],
+      "inputs": [
+        "integration:report",
+        "backend:endpoint"
+      ],
+      "outputs": [
+        "ship:decision"
+      ],
+      "workspace": "."
+    }
+  ]
+}

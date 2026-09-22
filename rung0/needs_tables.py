@@ -20,7 +20,7 @@ from compare import ALPHA, METRICS, compare, load_rows, pair  # noqa: E402
 COLS = [("failure_rate", "failure", 3), ("tct_p50", "p50 s", 0), ("tct_p99", "p99 s", 0), ("throughput_rph", "req·h⁻¹", 0),
         ("timeouts", "timeouts", 0), ("jain_all", "Jain", 2)]
 EXTRA = [("budget_errs", "refused", 0), ("usd_per_req", "$/req", 3), ("usd_waste_frac", "$ wasted", 3), ("children_aborted", "children aborted", 1),
-         ("join_p99", "join p99 s", 0)]
+         ("join_p99", "join p99 s", 0), ("refused_429", "429s", 0), ("provider_errs", "burned attempts", 0), ("leases", "leases", 0)]
 
 
 def main() -> None:

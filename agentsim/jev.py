@@ -531,20 +531,24 @@ class LocalSystemOne(SystemOne):
 
 
 class RemoteSystemOne(SystemOne):
-    """The vendor client (TypeSafe System One API). Environment: JEV_API_KEY (required), JEV_API_BASE (default
-    https://api.typesafe.ai; a LiteLLM proxy's `<base>/typesafe` works unchanged), JEV_MODEL (default jev-latest).
-    Retries 429 / 5xx with exponential backoff honouring `retry-after`; accounts usage and cost ($0.042 per million input
-    tokens, output free). Not exercised by the simulator; `evaluate-jev --remote` scores it on labelled examples."""
+    """The vendor client. Environment: JEV_API_KEY (required); JEV_API_BASE (default https://api.typesafe.ai — TypeSafe's
+    System One API; a LiteLLM proxy's `<base>/typesafe` works unchanged; `https://www.jevai.org` selects the community
+    proxy's native endpoint); JEV_API_PATH (default `/v1/systemone`, or `/api/v1/decisions` for jevai.org); JEV_MODEL
+    (default `jev-latest`, or `typesafe-ai/jev` for jevai.org). Responses wrapped as {code, message, data} (jevai.org)
+    are unwrapped. Retries 429 / 5xx with exponential backoff honouring `retry-after`; accounts usage and cost at
+    TypeSafe's published price. `evaluate-jev --remote` scores it on labelled examples."""
 
     PRICE_PER_MTOK = 0.042
 
-    def __init__(self, cat: dict[str, Question], max_retries: int = 4, timeout_s: float = 5.0):
+    def __init__(self, cat: dict[str, Question], max_retries: int = 4, timeout_s: float = 15.0):
         super().__init__(cat)
         self.key = os.environ.get("JEV_API_KEY", "")
         self.base = os.environ.get("JEV_API_BASE", "https://api.typesafe.ai").rstrip("/")
-        self.model = os.environ.get("JEV_MODEL", "jev-latest")
+        community = "jevai.org" in self.base
+        self.path = os.environ.get("JEV_API_PATH", "/api/v1/decisions" if community else "/v1/systemone")
+        self.model = os.environ.get("JEV_MODEL", "typesafe-ai/jev" if community else "jev-latest")
         if not self.key:
-            raise RuntimeError("RemoteSystemOne needs JEV_API_KEY in the environment (and optionally JEV_API_BASE, JEV_MODEL)")
+            raise RuntimeError("RemoteSystemOne needs JEV_API_KEY in the environment (and optionally JEV_API_BASE, JEV_API_PATH, JEV_MODEL)")
         self.max_retries, self.timeout_s = max_retries, timeout_s
         self.calls, self.retries, self.input_tokens, self.latency_s = 0, 0, 0, []
 
@@ -554,14 +558,19 @@ class RemoteSystemOne(SystemOne):
         data = json.dumps(body).encode("utf-8")
         delay = 0.5
         for attempt in range(self.max_retries + 1):
-            req = urllib.request.Request(f"{self.base}/v1/systemone", data=data,
-                                         headers={"Authorization": f"Bearer {self.key}", "Content-Type": "application/json"})
+            req = urllib.request.Request(f"{self.base}{self.path}", data=data,
+                                         headers={"Authorization": f"Bearer {self.key}", "Content-Type": "application/json",
+                                                  "User-Agent": "agentsim/1.0 (+https://github.com/Astroshreyas1/Society-Harness-)"})   # CDN bot rules refuse urllib's default
             t0 = time.perf_counter()
             try:
                 with urllib.request.urlopen(req, timeout=self.timeout_s) as resp:
                     out = json.loads(resp.read().decode("utf-8"))
                 self.latency_s.append(time.perf_counter() - t0)
                 self.calls += 1
+                if "answers" not in out and "data" in out:                    # the community proxy's {code, message, data} envelope
+                    if out.get("code", 0) != 0:
+                        raise RuntimeError(f"System One API error: {out.get('message')}")
+                    out = dict(out["data"], model=out["data"].get("model", self.model))
                 return out
             except urllib.error.HTTPError as e:
                 if e.code in (429, 500, 502, 503, 504) and attempt < self.max_retries:
