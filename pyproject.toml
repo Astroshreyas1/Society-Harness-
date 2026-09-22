@@ -1,0 +1,9 @@
+[project]
+name = "agentsim"
+version = "0.1.0"
+description = "Control: program-centric discrete-event simulator for concurrent agentic workflows (rung 0-3)"
+requires-python = ">=3.12"
+dependencies = ["numpy>=1.26"]
+
+[tool.uv]
+package = false

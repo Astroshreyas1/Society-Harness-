@@ -1,0 +1,9 @@
+{
+  "_doc": "A7: gain-vs-predictability axis. Hosted society, uncoordinated, recipe_temperature sweep (T<1 sharpens the phase chain, T>1 flattens it), 5 seeds, traces kept for E2.",
+  "base": "scenarios/hosted_mixed.json",
+  "seeds": [1, 2, 3, 4, 5],
+  "axes": {
+    "policy.type": ["uncoordinated"],
+    "generator.recipe_temperature": [0.1, 0.3, 0.5, 1.0, 2.0, 4.0]
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "_doc": "Phase 6 variants (NEEDS_REPORT): the \u00a75 baseline gate, the shipped rules, rung 3, the Needs controller from scratch / pre-trained / with Jev, its E6 ablations, and the oracle. All at the scenario's load; idle timeout 0 for the shipped rules and the oracle; the Needs controller decides parking itself (EV gate).",
+  "gate_fifo300": [
+    "policy.type=reactive_gate",
+    "policy.queue=fifo",
+    "framework.sandbox_idle_timeout_s=300"
+  ],
+  "gate_vtfq0": [
+    "policy.type=reactive_gate",
+    "policy.queue=vtfq",
+    "framework.sandbox_idle_timeout_s=0"
+  ],
+  "gate_srpt0": [
+    "policy.type=reactive_gate",
+    "policy.queue=srpt",
+    "framework.sandbox_idle_timeout_s=0"
+  ],
+  "lease0": [
+    "policy.type=lease",
+    "framework.sandbox_idle_timeout_s=0"
+  ],
+  "needs": [
+    "policy.type=needs"
+  ],
+  "needs_pre": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.hosted.npz"
+  ],
+  "needs_jev": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.hosted.npz",
+    "policy.needs.jev.enabled=true",
+    "policy.needs.jev.model=data/models/jev.hosted.npz"
+  ],
+  "needs-content": [
+    "policy.type=needs",
+    "policy.ablate=content"
+  ],
+  "needs-ev": [
+    "policy.type=needs",
+    "policy.ablate=ev"
+  ],
+  "needs-forecast": [
+    "policy.type=needs",
+    "policy.ablate=forecast"
+  ],
+  "needs-conformal": [
+    "policy.type=needs",
+    "policy.ablate=conformal"
+  ],
+  "needs-learn_pre": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.hosted.npz",
+    "policy.ablate=learn"
+  ],
+  "oracle0": [
+    "policy.type=clairvoyant",
+    "framework.sandbox_idle_timeout_s=0"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "_doc": "Reduced Phase 6 variant set (no per-switch ablations): baselines, rung 3, the Needs controller from scratch / pre-trained / with Jev, the oracle.",
+  "gate_fifo300": [
+    "policy.type=reactive_gate",
+    "policy.queue=fifo",
+    "framework.sandbox_idle_timeout_s=300"
+  ],
+  "gate_vtfq0": [
+    "policy.type=reactive_gate",
+    "policy.queue=vtfq",
+    "framework.sandbox_idle_timeout_s=0"
+  ],
+  "gate_srpt0": [
+    "policy.type=reactive_gate",
+    "policy.queue=srpt",
+    "framework.sandbox_idle_timeout_s=0"
+  ],
+  "lease0": [
+    "policy.type=lease",
+    "framework.sandbox_idle_timeout_s=0"
+  ],
+  "needs": [
+    "policy.type=needs"
+  ],
+  "needs_pre": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.hosted.npz"
+  ],
+  "needs_jev": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.hosted.npz",
+    "policy.needs.jev.enabled=true",
+    "policy.needs.jev.model=data/models/jev.hosted.npz"
+  ],
+  "oracle0": [
+    "policy.type=clairvoyant",
+    "framework.sandbox_idle_timeout_s=0"
+  ]
+}

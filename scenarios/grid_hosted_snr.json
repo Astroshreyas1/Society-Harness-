@@ -1,0 +1,10 @@
+{
+  "_doc": "B7: oracle headroom as a function of idle-time predictability. Hosted society, load x think_snr x policy, 5 seeds. Summaries only (run with --no-traces); E5 uses grid_e5.json.",
+  "base": "scenarios/hosted_mixed.json",
+  "seeds": [1, 2, 3, 4, 5],
+  "axes": {
+    "policy.type": ["uncoordinated", "reactive_gate", "clairvoyant"],
+    "arrivals.rate_per_min": [1.0, 2.0],
+    "generator.think_snr": [0.0, 0.5, 0.9]
+  }
+}

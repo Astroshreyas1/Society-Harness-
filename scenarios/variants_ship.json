@@ -1,0 +1,25 @@
+{
+  "_doc": "Named override sets for `agentsim sweep`. gate_sampled = the gate with the scenario's own sampled idle timeout and fifo; gate_ship = the shipped fixed rules (vtfq, park immediately); lease = the full controller at idle 0 (its park rule reduces to that); clairvoyant = the oracle at idle 0. gate_srpt = park immediately + shortest predicted chat service first (observable estimate).",
+  "gate_sampled": [
+    "policy.type=reactive_gate",
+    "policy.queue=fifo"
+  ],
+  "gate_ship": [
+    "policy.type=reactive_gate",
+    "policy.queue=vtfq",
+    "framework.sandbox_idle_timeout_s=0"
+  ],
+  "lease": [
+    "policy.type=lease",
+    "framework.sandbox_idle_timeout_s=0"
+  ],
+  "clairvoyant": [
+    "policy.type=clairvoyant",
+    "framework.sandbox_idle_timeout_s=0"
+  ],
+  "gate_srpt": [
+    "policy.type=reactive_gate",
+    "policy.queue=srpt",
+    "framework.sandbox_idle_timeout_s=0"
+  ]
+}

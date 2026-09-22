@@ -1,0 +1,16 @@
+{
+  "_doc": "Re-run of the Jev variant (v2) on the multi-agent society.",
+  "needs_jev2": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.multiagent.npz",
+    "policy.needs.jev.enabled=true",
+    "policy.needs.jev.model=data/models/jev.multiagent.npz"
+  ],
+  "needs_jev2_batch": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.multiagent.npz",
+    "policy.needs.jev.enabled=true",
+    "policy.needs.jev.model=data/models/jev.multiagent.npz",
+    "policy.needs.jev.batch_window_s=0.05"
+  ]
+}

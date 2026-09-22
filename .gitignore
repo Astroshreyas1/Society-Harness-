@@ -1,0 +1,20 @@
+# environment
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# generated runs: ~500 MB with traces; regenerate with the grid / sweep commands in README.md.
+# The per-grid summary CSVs that RUNG0_REPORT.md and NEEDS_REPORT.md quote are kept.
+data/synthetic/*
+!data/synthetic/*/
+data/synthetic/*/*
+!data/synthetic/*/grid_summary.csv
+!data/synthetic/needs/*.csv
+!data/synthetic/sweep/sweep.csv
+
+# real traces (TraceLab, CC BY 4.0, 1 GB): download + convert per README.md
+data/real/
+
+# trained models (48 MB, minutes to retrain with train-needs / train-jev); their hold-out reports are kept
+data/models/*.npz

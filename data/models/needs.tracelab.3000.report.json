@@ -1,0 +1,79 @@
+{
+  "records": 538938,
+  "train": 443198,
+  "holdout": {
+    "Q_out": {
+      "n": 32504,
+      "mae_median": 1.0206,
+      "mae_const": 1.1068,
+      "cover80": 0.899,
+      "cover95": 0.984,
+      "pinball80_ratio": 0.96,
+      "pinball95_ratio": 1.044,
+      "r2_median": 0.201
+    },
+    "G": {
+      "n": 32504,
+      "accuracy": 1.0,
+      "majority": 1.0
+    },
+    "R": {
+      "n": 87579,
+      "brier": 0.0,
+      "brier_const": 0.0,
+      "base_rate": 0.0
+    },
+    "Q_tool": {
+      "n": 31293,
+      "mae_median": 1.3201,
+      "mae_const": 1.9445,
+      "cover80": 0.817,
+      "cover95": 0.964,
+      "pinball80_ratio": 0.662,
+      "pinball95_ratio": 0.755,
+      "r2_median": 0.448
+    },
+    "T_gap": {
+      "n": 26236,
+      "mae_median": 1.1528,
+      "mae_const": 1.4679,
+      "cover80": 0.833,
+      "cover95": 0.961,
+      "pinball80_ratio": 0.767,
+      "pinball95_ratio": 0.855,
+      "r2_median": 0.241
+    },
+    "S2": {
+      "n": 26246,
+      "accuracy": 0.834,
+      "majority": 0.805
+    },
+    "S3": {
+      "n": 26246,
+      "accuracy": 0.461,
+      "majority": 0.382
+    },
+    "I_gap": {
+      "n": 5668,
+      "mae_median": 1.5908,
+      "mae_const": 1.5425,
+      "cover80": 0.835,
+      "cover95": 0.933,
+      "pinball80_ratio": 1.012,
+      "pinball95_ratio": 0.982,
+      "r2_median": -0.196
+    },
+    "I_cold": {
+      "n": 5668,
+      "brier": 0.0628,
+      "brier_const": 0.0616,
+      "base_rate": 0.934
+    }
+  },
+  "loss_per_epoch": [
+    2.4955,
+    2.4061,
+    2.3869
+  ],
+  "saved": "/private/tmp/claude-501/-Users-tharanirmal-Downloads-Control/0886f5b0-8e19-4826-b755-a763cc5f1b46/scratchpad/needs.tl3000.npz"
+}

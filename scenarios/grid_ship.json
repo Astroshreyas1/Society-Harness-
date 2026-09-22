@@ -1,0 +1,11 @@
+{
+  "_doc": "The shipped configuration, tested head-on: reactive gate {fifo, vtfq} x sandbox idle timeout {0, 300} vs lease (full) vs clairvoyant, hosted x load, snr 0, 10 seeds. Summaries only.",
+  "base": "scenarios/hosted_mixed.json",
+  "seeds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "axes": {
+    "policy.type": ["reactive_gate", "lease", "clairvoyant"],
+    "policy.queue": ["fifo", "vtfq"],
+    "framework.sandbox_idle_timeout_s": [0, 300],
+    "arrivals.rate_per_min": [1.0, 2.0]
+  }
+}

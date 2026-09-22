@@ -1,0 +1,9 @@
+{
+  "_doc": "E5 input: traces of the uncoordinated hosted society at three idle-time predictability levels, 5 seeds.",
+  "base": "scenarios/hosted_mixed.json",
+  "seeds": [1, 2, 3, 4, 5],
+  "axes": {
+    "policy.type": ["uncoordinated"],
+    "generator.think_snr": [0.0, 0.5, 0.9]
+  }
+}

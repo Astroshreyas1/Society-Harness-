@@ -1,0 +1,42 @@
+{
+  "_doc": "Does idle-time prediction earn anything when cold starts are expensive? Hosted 2/min x cold start x idle predictability x {gate at idle timeout 0 / 300, lease full, lease without prewarm}, 10 seeds.",
+  "base": "scenarios/hosted_mixed.json",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "axes": {
+    "policy.type": [
+      "reactive_gate",
+      "lease"
+    ],
+    "framework.sandbox_idle_timeout_s": [
+      0,
+      300
+    ],
+    "policy.ablate": [
+      "",
+      "prewarm"
+    ],
+    "framework.sandbox_cold_start_s": [
+      3.0,
+      30.0,
+      90.0
+    ],
+    "arrivals.rate_per_min": [
+      2.0
+    ],
+    "generator.think_snr": [
+      0.0,
+      0.9
+    ]
+  }
+}

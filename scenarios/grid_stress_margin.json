@@ -1,0 +1,12 @@
+{
+  "_doc": "Slice 3 with the learned collision-rate margin: stress society at 10 RPM, all policies at idle timeout 0 and vtfq (the honest baseline), lease at tau 0.5 / 0.8, 10 seeds.",
+  "base": "scenarios/hosted_stress.json",
+  "seeds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "axes": {
+    "policy.type": ["reactive_gate", "lease", "clairvoyant"],
+    "policy.tau": [0.5, 0.8],
+    "policy.queue": ["vtfq"],
+    "framework.sandbox_idle_timeout_s": [0],
+    "resources.ext.search.rpm|resources.ext.web.rpm": [10]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "_doc": "Re-run of the Jev variant with the v2 integration (catalogue, judge, veto) \u2014 hosted / tracelab / stress models.",
+  "needs_jev2": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.hosted.npz",
+    "policy.needs.jev.enabled=true",
+    "policy.needs.jev.model=data/models/jev.hosted.npz"
+  ],
+  "needs_jev2_batch": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.hosted.npz",
+    "policy.needs.jev.enabled=true",
+    "policy.needs.jev.model=data/models/jev.hosted.npz",
+    "policy.needs.jev.batch_window_s=0.05"
+  ]
+}

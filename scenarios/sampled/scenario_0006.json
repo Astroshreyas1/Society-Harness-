@@ -1,0 +1,169 @@
+{
+  "_doc": "Self-hosted model tier (over-limit = queue, KV admission on active state), partly-open MMPP session arrivals with human think time, a mixed society (coding / function-calling / research). hold_model_during_tool=True is the pinned-request configuration (server-side tools), reported separately. Used for E2-E4.",
+  "seed": 1006,
+  "horizon_s": 7200,
+  "recipes": "data/recipes.json",
+  "marginals": "data/marginals.json",
+  "arrivals": {
+    "type": "mmpp",
+    "rate_per_min": 0.8141091394206202,
+    "burst_factor": 5.703231192564031,
+    "mean_low_s": 600,
+    "mean_high_s": 120
+  },
+  "recipe_mix": {
+    "coding": 0.6,
+    "function_calling": 0.25,
+    "research": 0.15
+  },
+  "generator": {
+    "recipe_temperature": 0.8312857732951857,
+    "think_snr": 0.05833146609536627,
+    "think_state_seed": 0,
+    "tool_tail_scale": 1.0448088148524317,
+    "p_parallel_scale": 1.9733949686483203,
+    "content_snr": 0.0,
+    "_doc": "recipe_temperature sharpens (<1) or flattens (>1) every transition / tools_per_chat / tool_kind row as p^(1/T) renormalised (A7); 1.0 = the seeded rows. think_snr in [0,1] = share of log think-time variance explained by the observable state (recipe, phase before final, request bucket); 0 = i.i.d. seeds (B7); think_state_seed fixes the state->offset table of the society (same across run seeds); tool_tail_scale multiplies the log-sd of every tool-duration lognormal (medians kept); p_parallel_scale multiplies every recipe's p_parallel (clipped to 1). content_snr in [0,1] = probability that a step's content cue (tool skeleton class, prompt output/tool-count class, response plan phase) is the true class rather than uniform noise; the cue is drawn from its own stream so spans are identical at any value (PREDICTOR_DESIGN \u00a78)."
+  },
+  "framework": {
+    "hold_model_during_tool": false,
+    "context_limit": 400000,
+    "compaction_reset": 60000,
+    "sandbox_cold_start_s": 5.912738759848463,
+    "sandbox_idle_timeout_s": 900,
+    "step_timeout_s": 300
+  },
+  "reaction": {
+    "after_sdk": {
+      "replan": 0.6812823152785039,
+      "abort": 0.3187176847214961
+    },
+    "max_episodes": 3,
+    "_doc": "SDK retries come first (policy.sdk_retries); only then the agent replans or aborts. PRIOR."
+  },
+  "model": {
+    "prefill_rate": 20000,
+    "decode_base": 46.8,
+    "decode_capacity": 1500,
+    "kv_ttl_s": 300,
+    "kv_reserve_out": 4096,
+    "price_in_per_mtok": 0.0,
+    "price_out_per_mtok": 0.0
+  },
+  "resources": {
+    "model.slots": {
+      "capacity": 14,
+      "tier": "model",
+      "api_like": false
+    },
+    "model.kv": {
+      "capacity": 2500000,
+      "tier": "model",
+      "api_like": false
+    },
+    "model.tpm": {
+      "capacity": 5000000,
+      "tier": "model",
+      "api_like": false
+    },
+    "sandbox.mem": {
+      "capacity": 185,
+      "tier": "tool",
+      "api_like": false
+    },
+    "sandbox.cpu": {
+      "capacity": 22,
+      "tier": "tool",
+      "api_like": false,
+      "timeout_s": 900
+    },
+    "ext.search": {
+      "capacity": 8,
+      "rpm": 111.32521343867904,
+      "background_load": 0.42752992564157033,
+      "tier": "tool",
+      "api_like": true,
+      "timeout_s": 60
+    },
+    "ext.web": {
+      "capacity": 8,
+      "rpm": 69.9982317322382,
+      "background_load": 0.3328692888797456,
+      "tier": "tool",
+      "api_like": true,
+      "timeout_s": 60
+    },
+    "ext.api": {
+      "capacity": 16,
+      "rpm": 68.20407360166001,
+      "background_load": 0.1,
+      "tier": "tool",
+      "api_like": true,
+      "timeout_s": 30
+    },
+    "svc.retrieval": {
+      "capacity": 16,
+      "rpm": 600,
+      "background_load": 0.1,
+      "tier": "service",
+      "api_like": true,
+      "timeout_s": 30
+    }
+  },
+  "policy": {
+    "type": "uncoordinated",
+    "sdk_retries": 2,
+    "retry_base_s": 0.5,
+    "retry_cap_s": 8.0,
+    "jitter": true,
+    "bucket_fraction": 0.8,
+    "aimd_min": 1.0,
+    "header_pause_frac": 0.1,
+    "queue": "fifo",
+    "tau": 0.8,
+    "h": 600,
+    "ablate": "",
+    "needs": {
+      "model": "",
+      "learn": true,
+      "replay": 1,
+      "jev": {
+        "enabled": false,
+        "model": "",
+        "rpm": 600,
+        "concurrency": 8,
+        "background_load": 0.1,
+        "latency_median_s": 0.15,
+        "latency_p99_s": 0.5,
+        "batch_window_s": 0.0,
+        "remote": false
+      },
+      "starvation_guard": false
+    },
+    "_doc": "sdk_retries/backoff = Anthropic/OpenAI SDK defaults (2 retries, 0.5-8 s, jittered); jitter=false reproduces the herd; queue = fifo | vtfq (virtual-time fair queuing on realised memory-centric cost, a fixed rule); tau / h are the lease controller's two knobs (quantile, horizon seconds) needs = the Needs controller (policy.type=needs): model = pre-trained predictor (data/models/*.npz, '' = learn online from scratch), learn/replay = online learning and replay steps per label; jev = the System One channel (ext.jev): enabled, model file ('' = untrained), rpm/concurrency/background_load/latency."
+  },
+  "deadlock_timeout_s": 600,
+  "warmup_s": 600,
+  "sampled_knobs": {
+    "arrivals.rate_per_min": 0.8141091394206202,
+    "arrivals.burst_factor": 5.703231192564031,
+    "resources.model.slots.capacity": 14,
+    "resources.sandbox.mem.capacity": 185,
+    "resources.sandbox.cpu.capacity": 22,
+    "resources.ext.search.rpm": 111.32521343867904,
+    "resources.ext.search.background_load": 0.42752992564157033,
+    "resources.ext.web.rpm": 69.9982317322382,
+    "resources.ext.web.background_load": 0.3328692888797456,
+    "resources.ext.api.rpm": 68.20407360166001,
+    "framework.step_timeout_s": 300,
+    "framework.sandbox_idle_timeout_s": 900,
+    "framework.sandbox_cold_start_s": 5.912738759848463,
+    "reaction.after_sdk.abort": 0.3187176847214961,
+    "generator.recipe_temperature": 0.8312857732951857,
+    "generator.think_snr": 0.05833146609536627,
+    "generator.tool_tail_scale": 1.0448088148524317,
+    "generator.p_parallel_scale": 1.9733949686483203,
+    "reaction.after_sdk.replan": 0.6812823152785039
+  },
+  "budgets": {}
+}

@@ -1,0 +1,324 @@
+{
+  "provenance": {
+    "note": "Structure recipes (WfChef-style, hand-seeded). A recipe is a phase Markov chain evaluated once per LLM (chat) step; each phase sets how many tool calls follow the chat, which tool kinds, and whether a service-tier retrieval precedes the chat. Targets: coding = TraceLab Sec. 1/Table 2 (8.8 LLM calls and 10.8 tool calls per user request; Bash/Read/Edit >80% of calls; 54 tools); function_calling = AgentServeSim Table 3 (BFCL v4 median 5.5 calls). research is a PRIOR. Transition probabilities are PRIOR and are to be re-mined from real traces (`python -m agentsim fit`).",
+    "p_parallel": "PRIOR: probability that a chat's >=2 tool calls are issued in parallel (TraceLab reports parallel tool calls exist; share unquantified).",
+    "other": "Catch-all local tool kind for traces (TraceLab has 54 tools; top-3 > 80%): TaskCreate/TaskUpdate/Agent/Write... run in the sandbox. Seeded recipes never draw it; the fitted ones do. (ISSUES C5)",
+    "mcp": "PRIOR (Phase 7): a coding agent whose tools also run on two MCP servers (`gh`: repository/PR operations on mcp.github; `sql`: queries on mcp.db) and a local accelerator (`embed`: embeddings on gpu.local); each has a per-call cost. Rows hand-seeded."
+  },
+  "tool_resources": {
+    "read": "sandbox.cpu",
+    "edit": "sandbox.cpu",
+    "grep": "sandbox.cpu",
+    "bash": "sandbox.cpu",
+    "test": "sandbox.cpu",
+    "search": "ext.search",
+    "web": "ext.web",
+    "api": "ext.api",
+    "other": "sandbox.cpu",
+    "gh": "mcp.github",
+    "sql": "mcp.db",
+    "embed": "gpu.local"
+  },
+  "recipes": {
+    "coding": {
+      "tokens": "coding",
+      "start": "plan",
+      "transitions": {
+        "plan": {
+          "plan": 0.2,
+          "explore": 0.6,
+          "edit": 0.15,
+          "final": 0.05
+        },
+        "explore": {
+          "explore": 0.55,
+          "edit": 0.35,
+          "verify": 0.05,
+          "final": 0.05
+        },
+        "edit": {
+          "edit": 0.4,
+          "verify": 0.35,
+          "explore": 0.15,
+          "final": 0.1
+        },
+        "verify": {
+          "edit": 0.33,
+          "verify": 0.15,
+          "explore": 0.1,
+          "final": 0.42
+        }
+      },
+      "tools_per_chat": {
+        "plan": {
+          "0": 0.5,
+          "1": 0.4,
+          "2": 0.1
+        },
+        "explore": {
+          "1": 0.45,
+          "2": 0.35,
+          "3": 0.15,
+          "4": 0.05
+        },
+        "edit": {
+          "1": 0.55,
+          "2": 0.35,
+          "3": 0.1
+        },
+        "verify": {
+          "1": 0.7,
+          "2": 0.3
+        },
+        "final": {
+          "0": 1.0
+        }
+      },
+      "tool_kind": {
+        "plan": {
+          "read": 0.5,
+          "grep": 0.3,
+          "bash": 0.2
+        },
+        "explore": {
+          "read": 0.55,
+          "grep": 0.25,
+          "bash": 0.15,
+          "search": 0.05
+        },
+        "edit": {
+          "edit": 0.7,
+          "read": 0.2,
+          "bash": 0.1
+        },
+        "verify": {
+          "test": 0.45,
+          "bash": 0.5,
+          "read": 0.05
+        },
+        "final": {}
+      },
+      "retrieval_prob": {
+        "plan": 0.0,
+        "explore": 0.0,
+        "edit": 0.0,
+        "verify": 0.0,
+        "final": 0.0
+      },
+      "p_parallel": 0.15
+    },
+    "function_calling": {
+      "tokens": "function_calling",
+      "start": "plan",
+      "transitions": {
+        "plan": {
+          "call": 0.8,
+          "final": 0.2
+        },
+        "call": {
+          "call": 0.55,
+          "final": 0.45
+        }
+      },
+      "tools_per_chat": {
+        "plan": {
+          "0": 0.6,
+          "1": 0.4
+        },
+        "call": {
+          "1": 0.8,
+          "2": 0.2
+        },
+        "final": {
+          "0": 1.0
+        }
+      },
+      "tool_kind": {
+        "plan": {
+          "api": 0.8,
+          "read": 0.2
+        },
+        "call": {
+          "api": 0.9,
+          "read": 0.1
+        },
+        "final": {}
+      },
+      "retrieval_prob": {
+        "plan": 0.0,
+        "call": 0.0,
+        "final": 0.0
+      },
+      "p_parallel": 0.1
+    },
+    "research": {
+      "tokens": "research",
+      "start": "plan",
+      "transitions": {
+        "plan": {
+          "search": 0.85,
+          "final": 0.15
+        },
+        "search": {
+          "search": 0.45,
+          "read": 0.4,
+          "synthesize": 0.15
+        },
+        "read": {
+          "read": 0.35,
+          "search": 0.35,
+          "synthesize": 0.3
+        },
+        "synthesize": {
+          "synthesize": 0.3,
+          "search": 0.2,
+          "final": 0.5
+        }
+      },
+      "tools_per_chat": {
+        "plan": {
+          "0": 0.7,
+          "1": 0.3
+        },
+        "search": {
+          "1": 0.4,
+          "2": 0.4,
+          "3": 0.2
+        },
+        "read": {
+          "1": 0.5,
+          "2": 0.5
+        },
+        "synthesize": {
+          "0": 0.8,
+          "1": 0.2
+        },
+        "final": {
+          "0": 1.0
+        }
+      },
+      "tool_kind": {
+        "plan": {
+          "search": 1.0
+        },
+        "search": {
+          "search": 0.8,
+          "web": 0.2
+        },
+        "read": {
+          "web": 0.9,
+          "read": 0.1
+        },
+        "synthesize": {
+          "read": 1.0
+        },
+        "final": {}
+      },
+      "retrieval_prob": {
+        "plan": 0.2,
+        "search": 0.5,
+        "read": 0.3,
+        "synthesize": 0.6,
+        "final": 0.0
+      },
+      "p_parallel": 0.3
+    },
+    "coding_mcp": {
+      "tokens": "coding",
+      "start": "plan",
+      "transitions": {
+        "plan": {
+          "plan": 0.2,
+          "explore": 0.6,
+          "edit": 0.15,
+          "final": 0.05
+        },
+        "explore": {
+          "explore": 0.55,
+          "edit": 0.35,
+          "verify": 0.05,
+          "final": 0.05
+        },
+        "edit": {
+          "edit": 0.4,
+          "verify": 0.35,
+          "explore": 0.15,
+          "final": 0.1
+        },
+        "verify": {
+          "edit": 0.33,
+          "verify": 0.15,
+          "explore": 0.1,
+          "final": 0.42
+        }
+      },
+      "tools_per_chat": {
+        "plan": {
+          "0": 0.5,
+          "1": 0.4,
+          "2": 0.1
+        },
+        "explore": {
+          "1": 0.45,
+          "2": 0.35,
+          "3": 0.15,
+          "4": 0.05
+        },
+        "edit": {
+          "1": 0.55,
+          "2": 0.35,
+          "3": 0.1
+        },
+        "verify": {
+          "1": 0.7,
+          "2": 0.3
+        },
+        "final": {
+          "0": 1.0
+        }
+      },
+      "tool_kind": {
+        "plan": {
+          "read": 0.35,
+          "grep": 0.2,
+          "bash": 0.1,
+          "gh": 0.2,
+          "sql": 0.1,
+          "embed": 0.05
+        },
+        "explore": {
+          "read": 0.4,
+          "grep": 0.2,
+          "bash": 0.1,
+          "gh": 0.1,
+          "sql": 0.1,
+          "embed": 0.1
+        },
+        "edit": {
+          "edit": 0.5000000000000001,
+          "read": 0.20000000000000004,
+          "bash": 0.10000000000000002,
+          "gh": 0.10000000000000002,
+          "sql": 0.10000000000000002
+        },
+        "verify": {
+          "test": 0.4,
+          "bash": 0.2,
+          "gh": 0.25,
+          "sql": 0.15
+        },
+        "final": {
+          "read": 1.0
+        }
+      },
+      "retrieval_prob": {
+        "plan": 0.0,
+        "explore": 0.0,
+        "edit": 0.0,
+        "verify": 0.0,
+        "final": 0.0
+      },
+      "p_parallel": 0.15
+    }
+  }
+}

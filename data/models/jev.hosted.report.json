@@ -1,0 +1,171 @@
+{
+  "examples": 44587,
+  "per_question": {
+    "next_chat": {
+      "type": "choice",
+      "n_hold": 2465,
+      "accuracy": 0.7943,
+      "majority": 0.7014,
+      "ece": 0.0191,
+      "temperature": 1.158,
+      "nll": 0.4778
+    },
+    "next_tool": {
+      "type": "choice",
+      "n_hold": 2465,
+      "accuracy": 0.568,
+      "majority": 0.2986,
+      "ece": 0.0246,
+      "temperature": 1.089,
+      "nll": 1.1473
+    },
+    "duration_class": {
+      "type": "choice",
+      "n_hold": 3202,
+      "accuracy": 0.8579,
+      "majority": 0.6908,
+      "ece": 0.021,
+      "temperature": 1.092,
+      "nll": 0.3795
+    },
+    "tail_risk": {
+      "type": "score",
+      "n_hold": 3202,
+      "accuracy": 0.8576,
+      "majority": 0.6908,
+      "ece": 0.0213,
+      "temperature": 1.089,
+      "nll": 0.3798,
+      "mae_levels": 0.254
+    },
+    "out_class": {
+      "type": "choice",
+      "n_hold": 2985,
+      "accuracy": 0.7126,
+      "majority": 0.3642,
+      "ece": 0.0359,
+      "temperature": 1.092,
+      "nll": 0.7714
+    },
+    "remaining_work": {
+      "type": "score",
+      "n_hold": 4986,
+      "accuracy": 0.5174,
+      "majority": 0.3771,
+      "ece": 0.0272,
+      "temperature": 1.298,
+      "nll": 1.0418,
+      "mae_levels": 0.601
+    },
+    "tier_next": {
+      "type": "choice",
+      "n_hold": 5748,
+      "accuracy": 0.928,
+      "majority": 0.7606,
+      "ece": 0.0137,
+      "temperature": 0.987,
+      "nll": 0.1702
+    },
+    "idle_class": {
+      "type": "choice",
+      "n_hold": 280,
+      "accuracy": 0.2679,
+      "majority": 0.2929,
+      "ece": 0.0228,
+      "temperature": 5.67,
+      "nll": 1.3788
+    },
+    "spawn_width": {
+      "type": "choice",
+      "n_hold": 2985,
+      "accuracy": 1.0,
+      "majority": 1.0,
+      "ece": 0.0,
+      "temperature": 0.297,
+      "nll": -0.0
+    },
+    "fail_soon": {
+      "type": "noul",
+      "n_hold": 8463,
+      "accuracy": 1.0,
+      "majority": 1.0,
+      "ece": 0.0,
+      "temperature": 0.2,
+      "nll": 0.0
+    },
+    "risk": {
+      "type": "score",
+      "n_hold": 8463,
+      "accuracy": 1.0,
+      "majority": 1.0,
+      "ece": 0.0,
+      "temperature": 0.2,
+      "nll": 0.0,
+      "mae_levels": 0.0
+    },
+    "safe_to_park": {
+      "type": "noul",
+      "n_hold": 280,
+      "accuracy": 0.9393,
+      "majority": 0.9393,
+      "ece": 0.0534,
+      "temperature": 1.654,
+      "nll": 0.2803
+    },
+    "is_final_turn": {
+      "type": "noul",
+      "n_hold": 2985,
+      "accuracy": 0.939,
+      "majority": 0.866,
+      "ece": 0.0039,
+      "temperature": 1.076,
+      "nll": 0.1611
+    },
+    "tool_will_error": {
+      "type": "noul",
+      "n_hold": 3202,
+      "accuracy": 0.9806,
+      "majority": 0.9553,
+      "ece": 0.0056,
+      "temperature": 1.256,
+      "nll": 0.0718
+    },
+    "cost_class": {
+      "type": "choice",
+      "n_hold": 6187,
+      "accuracy": 1.0,
+      "majority": 1.0,
+      "ece": 0.0,
+      "temperature": 0.299,
+      "nll": -0.0
+    },
+    "budget_will_exceed": {
+      "type": "noul",
+      "n_hold": 4205,
+      "accuracy": 1.0,
+      "majority": 1.0,
+      "ece": 0.0,
+      "temperature": 0.282,
+      "nll": -0.0
+    },
+    "stuck_in_loop": {
+      "type": "noul",
+      "n_hold": 2503,
+      "accuracy": 0.9565,
+      "majority": 0.9565,
+      "ece": 0.0086,
+      "temperature": 1.189,
+      "nll": 0.1624
+    },
+    "phase": {
+      "type": "choice",
+      "n_hold": 2503,
+      "accuracy": 0.7499,
+      "majority": 0.1914,
+      "ece": 0.0299,
+      "temperature": 1.077,
+      "nll": 0.7291
+    }
+  },
+  "saved": "data/models/jev.hosted.npz"
+}

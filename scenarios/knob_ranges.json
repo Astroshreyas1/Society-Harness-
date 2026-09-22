@@ -1,0 +1,100 @@
+{
+  "_doc": "A8 domain-randomisation ranges for `agentsim sample-scenarios`. Every key is a dotted scenario path (resource names keep their dots); types: uniform | loguniform | int | choice. All ranges are PRIORS (v2 \u00a73.5): arrival rate/burstiness, provider budgets and background load, sandbox pool, model slots, client/idle timeouts, reaction prior, generator entropy (recipe_temperature), idle predictability (think_snr), tool tail and parallelism. A knob with `complement` also sets that sibling path to 1 - value (probability rows).",
+  "arrivals.rate_per_min": {
+    "type": "loguniform",
+    "low": 0.5,
+    "high": 4.0
+  },
+  "arrivals.burst_factor": {
+    "type": "uniform",
+    "low": 1.0,
+    "high": 6.0
+  },
+  "resources.model.slots.capacity": {
+    "type": "int",
+    "low": 8,
+    "high": 32
+  },
+  "resources.sandbox.mem.capacity": {
+    "type": "int",
+    "low": 48,
+    "high": 192
+  },
+  "resources.sandbox.cpu.capacity": {
+    "type": "int",
+    "low": 8,
+    "high": 32
+  },
+  "resources.ext.search.rpm": {
+    "type": "loguniform",
+    "low": 20,
+    "high": 240
+  },
+  "resources.ext.search.background_load": {
+    "type": "uniform",
+    "low": 0.0,
+    "high": 0.6
+  },
+  "resources.ext.web.rpm": {
+    "type": "loguniform",
+    "low": 20,
+    "high": 240
+  },
+  "resources.ext.web.background_load": {
+    "type": "uniform",
+    "low": 0.0,
+    "high": 0.6
+  },
+  "resources.ext.api.rpm": {
+    "type": "loguniform",
+    "low": 60,
+    "high": 600
+  },
+  "framework.step_timeout_s": {
+    "type": "choice",
+    "options": [
+      300,
+      600,
+      900
+    ]
+  },
+  "framework.sandbox_idle_timeout_s": {
+    "type": "choice",
+    "options": [
+      60,
+      300,
+      900
+    ]
+  },
+  "framework.sandbox_cold_start_s": {
+    "type": "loguniform",
+    "low": 1.0,
+    "high": 30.0
+  },
+  "reaction.after_sdk.abort": {
+    "type": "uniform",
+    "low": 0.05,
+    "high": 0.4,
+    "complement": "reaction.after_sdk.replan"
+  },
+  "generator.recipe_temperature": {
+    "type": "loguniform",
+    "low": 0.2,
+    "high": 3.0
+  },
+  "generator.think_snr": {
+    "type": "uniform",
+    "low": 0.0,
+    "high": 0.95
+  },
+  "generator.tool_tail_scale": {
+    "type": "uniform",
+    "low": 0.7,
+    "high": 1.6
+  },
+  "generator.p_parallel_scale": {
+    "type": "uniform",
+    "low": 0.5,
+    "high": 3.0
+  }
+}

@@ -1,0 +1,348 @@
+{
+  "provenance": {
+    "note": "Seed priors. Every entry is to be replaced by `python -m agentsim fit` on real OTel-shaped traces at rung 0. Numbers marked TraceLab are from Zhu et al. 2026 (arXiv 2606.30560, Tables 2/7/8/10, Fig. 8, Sec. 6). AgentServeSim = arXiv 2606.09613 Table 3 (BFCL v4, SWE-bench via mini-SWE-agent). AgentSysBench = arXiv 2608.15127. Entries marked PRIOR are unverified guesses exposed as knobs.",
+    "tool_duration": "Shaped to reproduce TraceLab Fig. 8 / Sec. 6.2 (Claude): calls <1 s = 70% of calls and <1% of tool time; calls >1 min = 4.9% of calls and 92% of tool time; mean 16.8 s. Per-kind split is PRIOR; the aggregate is checked by `fidelity` and reported.",
+    "output_tokens.coding": "fitted, n=305195",
+    "append_tokens.coding": "fitted, n=255461 (per-tool share of the context growth between consecutive chats; negative deltas from compaction dropped)",
+    "initial_context_tokens.coding": "fitted, n=5312 (tokens_in of the first chat, includes the first user message)",
+    "output_tokens.function_calling": "AgentServeSim Table 3: BFCL mean 42 output tokens/turn (PRIOR shape) [unfitted: seed kept]",
+    "append_tokens.function_calling": "PRIOR; BFCL mean context 6,603 [unfitted: seed kept]",
+    "think_time": "fitted, n=38482",
+    "session_requests": "fitted from 5312 completed sessions (censored sessions excluded: biased short)",
+    "sandbox_mem_gb": "AgentSysBench: sandbox working set peaks at 28 GB/session (p99); median PRIOR [unfitted: seed kept]",
+    "retrieval_duration": "PRIOR (service tier) [unfitted: seed kept]",
+    "tool_duration.other": "fitted 3-component lognormal mixture by EM (BIC over 1-3), n=21731",
+    "tool_duration.read": "fitted 3-component lognormal mixture by EM (BIC over 1-3), n=58999",
+    "tool_duration.bash": "fitted 3-component lognormal mixture by EM (BIC over 1-3), n=150004",
+    "tool_duration.edit": "fitted 3-component lognormal mixture by EM (BIC over 1-3), n=44205",
+    "tool_duration.search": "fitted 3-component lognormal mixture by EM (BIC over 1-3), n=189",
+    "tool_duration.web": "fitted 3-component lognormal mixture by EM (BIC over 1-3), n=735",
+    "tool_duration.grep": "fitted 3-component lognormal mixture by EM (BIC over 1-3), n=2957",
+    "tool_duration.test": " [unfitted: seed kept]",
+    "tool_duration.api": " [unfitted: seed kept]",
+    "output_tokens.research": " [unfitted: seed kept]",
+    "append_tokens.research": " [unfitted: seed kept]",
+    "initial_context_tokens.function_calling": " [unfitted: seed kept]",
+    "initial_context_tokens.research": " [unfitted: seed kept]",
+    "fitted_entries": [
+      "append_tokens.coding",
+      "initial_context_tokens.coding",
+      "output_tokens.coding",
+      "session_requests",
+      "think_time",
+      "tool_duration.bash",
+      "tool_duration.edit",
+      "tool_duration.grep",
+      "tool_duration.other",
+      "tool_duration.read",
+      "tool_duration.search",
+      "tool_duration.web"
+    ],
+    "unfitted_entries": [
+      "append_tokens.function_calling",
+      "append_tokens.research",
+      "initial_context_tokens.function_calling",
+      "initial_context_tokens.research",
+      "output_tokens.function_calling",
+      "output_tokens.research",
+      "retrieval_duration",
+      "sandbox_mem_gb",
+      "tool_duration.api",
+      "tool_duration.test"
+    ]
+  },
+  "tool_duration": {
+    "read": {
+      "type": "mixture",
+      "weights": [
+        0.6051462005812147,
+        0.34946776011468267,
+        0.045386039304101816
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 0.031429687999608165,
+          "p99": 0.7743105403417884
+        },
+        {
+          "type": "lognormal",
+          "median": 0.01819441766891246,
+          "p99": 0.08018209606223604
+        },
+        {
+          "type": "lognormal",
+          "median": 0.11938188743354387,
+          "p99": 38.78545621130709
+        }
+      ],
+      "cap": 3600
+    },
+    "edit": {
+      "type": "mixture",
+      "weights": [
+        0.5790522029732322,
+        0.17140008578686206,
+        0.24954771123989805
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 0.06462984563881115,
+          "p99": 0.23522516731056
+        },
+        {
+          "type": "lognormal",
+          "median": 0.02682773927424541,
+          "p99": 0.21413147734871943
+        },
+        {
+          "type": "lognormal",
+          "median": 1.129920829577734,
+          "p99": 195.4982258041611
+        }
+      ],
+      "cap": 3600
+    },
+    "grep": {
+      "type": "mixture",
+      "weights": [
+        0.5223000132102461,
+        0.4146772747364186,
+        0.06302271205333276
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 0.03699602107746773,
+          "p99": 0.13316997943997674
+        },
+        {
+          "type": "lognormal",
+          "median": 0.18783040197497197,
+          "p99": 0.3269263506618823
+        },
+        {
+          "type": "lognormal",
+          "median": 0.15003159242708863,
+          "p99": 85.05333373068105
+        }
+      ],
+      "cap": 3600
+    },
+    "bash": {
+      "type": "mixture",
+      "weights": [
+        0.48174721939540677,
+        0.10893680039969678,
+        0.40931598020483273
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 0.09620530644352428,
+          "p99": 0.45886519541755844
+        },
+        {
+          "type": "lognormal",
+          "median": 2.443240289946436,
+          "p99": 6.857460760518929
+        },
+        {
+          "type": "lognormal",
+          "median": 3.914622369722872,
+          "p99": 857.0957658232618
+        }
+      ],
+      "cap": 3600
+    },
+    "test": {
+      "type": "mixture",
+      "weights": [
+        0.3,
+        0.7
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 8.0,
+          "p99": 60.0
+        },
+        {
+          "type": "lognormal",
+          "median": 180.0,
+          "p99": 1800.0,
+          "cap": 3600
+        }
+      ]
+    },
+    "search": {
+      "type": "mixture",
+      "weights": [
+        0.010582010582015874,
+        0.9171790018213567,
+        0.0722389875966435
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 0.0014142466051209502,
+          "p99": 0.0031673714350120633
+        },
+        {
+          "type": "lognormal",
+          "median": 13.65636687115615,
+          "p99": 54.65151938972785
+        },
+        {
+          "type": "lognormal",
+          "median": 150.8859254476302,
+          "p99": 573.954875248217
+        }
+      ],
+      "cap": 3600
+    },
+    "web": {
+      "type": "mixture",
+      "weights": [
+        0.3308220122509964,
+        0.3311475837064161,
+        0.33803040404259166
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 1.2661680889434341,
+          "p99": 1002.3666748600696
+        },
+        {
+          "type": "lognormal",
+          "median": 5.60112850512054,
+          "p99": 12.13650277315892
+        },
+        {
+          "type": "lognormal",
+          "median": 11.189184547714293,
+          "p99": 46.96877073708748
+        }
+      ],
+      "cap": 3600
+    },
+    "api": {
+      "type": "lognormal",
+      "median": 0.8,
+      "p99": 10.0
+    },
+    "other": {
+      "type": "mixture",
+      "weights": [
+        0.360322702910457,
+        0.5155012689645738,
+        0.12417602812497458
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 0.00581387016917369,
+          "p99": 0.03533553969366413
+        },
+        {
+          "type": "lognormal",
+          "median": 0.04813614243640545,
+          "p99": 0.2010408537424731
+        },
+        {
+          "type": "lognormal",
+          "median": 6.644180875081733,
+          "p99": 5047.481999529811
+        }
+      ],
+      "cap": 3600
+    }
+  },
+  "output_tokens": {
+    "coding": {
+      "type": "lognormal",
+      "median": 355.0,
+      "p99": 7159.0,
+      "cap": 32000
+    },
+    "function_calling": {
+      "type": "lognormal",
+      "median": 30,
+      "p99": 400,
+      "cap": 4000
+    },
+    "research": {
+      "type": "lognormal",
+      "median": 400,
+      "p99": 8000,
+      "cap": 32000
+    }
+  },
+  "append_tokens": {
+    "coding": {
+      "type": "lognormal",
+      "median": 257.0,
+      "p99": 8895.0,
+      "cap": 120000
+    },
+    "function_calling": {
+      "type": "lognormal",
+      "median": 300,
+      "p99": 5000,
+      "cap": 20000
+    },
+    "research": {
+      "type": "lognormal",
+      "median": 1500,
+      "p99": 60000,
+      "cap": 120000
+    }
+  },
+  "initial_context_tokens": {
+    "coding": {
+      "type": "lognormal",
+      "median": 18820.5,
+      "p99": 169018.89,
+      "cap": 400000
+    },
+    "function_calling": {
+      "type": "lognormal",
+      "median": 4000,
+      "p99": 12000
+    },
+    "research": {
+      "type": "lognormal",
+      "median": 6000,
+      "p99": 30000
+    }
+  },
+  "think_time": {
+    "type": "lognormal",
+    "median": 220.83100008964539,
+    "p90": 1150.36649992466,
+    "cap": 14400
+  },
+  "session_requests": {
+    "type": "one_or",
+    "p_one": 0.7373870481927711,
+    "then": {
+      "type": "lognormal",
+      "median": 5.0,
+      "p99": 430.3399999999979,
+      "cap": 300
+    }
+  },
+  "sandbox_mem_gb": {
+    "type": "lognormal",
+    "median": 4.0,
+    "p99": 28.0,
+    "cap": 64
+  },
+  "retrieval_duration": {
+    "type": "lognormal",
+    "median": 0.4,
+    "p99": 5.0
+  }
+}

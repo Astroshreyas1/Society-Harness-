@@ -1,0 +1,21 @@
+{
+  "_doc": "Named configuration: the framework pins the model slot across tool calls (server-side tools). 1 session/min, 5 seeds.",
+  "base": "scenarios/hosted_mixed.json",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "axes": {
+    "policy.type": [
+      "uncoordinated",
+      "reactive_gate",
+      "clairvoyant"
+    ],
+    "framework.hold_model_during_tool": [
+      true
+    ]
+  }
+}

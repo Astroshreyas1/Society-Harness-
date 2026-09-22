@@ -1,0 +1,23 @@
+{
+  "_doc": "B18: stress society x policy x provider budget (ext.search and ext.web RPM tied), 5 seeds. The lowest budgets make the API-like tier bind; the sandbox pool (64 GB / 12 CPU) binds throughout.",
+  "base": "scenarios/hosted_stress.json",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "axes": {
+    "policy.type": [
+      "uncoordinated",
+      "reactive_gate",
+      "clairvoyant"
+    ],
+    "resources.ext.search.rpm|resources.ext.web.rpm": [
+      10,
+      20,
+      40
+    ]
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "examples": 30130,
+  "per_question": {
+    "next_chat": {
+      "type": "choice",
+      "n_hold": 1800,
+      "accuracy": 0.9039,
+      "majority": 0.8783,
+      "ece": 0.0177,
+      "temperature": 1.045,
+      "nll": 0.2944
+    },
+    "next_tool": {
+      "type": "choice",
+      "n_hold": 1800,
+      "accuracy": 0.5128,
+      "majority": 0.4278,
+      "ece": 0.0339,
+      "temperature": 1.083,
+      "nll": 1.2918
+    },
+    "duration_class": {
+      "type": "choice",
+      "n_hold": 2211,
+      "accuracy": 0.8182,
+      "majority": 0.7626,
+      "ece": 0.012,
+      "temperature": 1.104,
+      "nll": 0.498
+    },
+    "tail_risk": {
+      "type": "score",
+      "n_hold": 2211,
+      "accuracy": 0.8173,
+      "majority": 0.7626,
+      "ece": 0.0131,
+      "temperature": 1.1,
+      "nll": 0.4985,
+      "mae_levels": 0.403
+    },
+    "out_class": {
+      "type": "choice",
+      "n_hold": 2098,
+      "accuracy": 0.6792,
+      "majority": 0.4337,
+      "ece": 0.0322,
+      "temperature": 1.193,
+      "nll": 0.8716
+    },
+    "remaining_work": {
+      "type": "score",
+      "n_hold": 3617,
+      "accuracy": 0.4083,
+      "majority": 0.3951,
+      "ece": 0.0286,
+      "temperature": 1.362,
+      "nll": 1.1655,
+      "mae_levels": 0.768
+    },
+    "tier_next": {
+      "type": "choice",
+      "n_hold": 4065,
+      "accuracy": 0.9958,
+      "majority": 0.985,
+      "ece": 0.0016,
+      "temperature": 1.108,
+      "nll": 0.0181
+    },
+    "idle_class": {
+      "type": "choice",
+      "n_hold": 48,
+      "accuracy": 0.3542,
+      "majority": 0.4583,
+      "ece": 0.0993,
+      "temperature": 4.039,
+      "nll": 1.3499
+    },
+    "spawn_width": {
+      "type": "choice",
+      "n_hold": 2098,
+      "accuracy": 1.0,
+      "majority": 1.0,
+      "ece": 0.0,
+      "temperature": 0.287,
+      "nll": -0.0
+    },
+    "fail_soon": {
+      "type": "noul",
+      "n_hold": 6014,
+      "accuracy": 0.9977,
+      "majority": 0.9977,
+      "ece": 0.0011,
+      "temperature": 1.489,
+      "nll": 0.0078
+    },
+    "risk": {
+      "type": "score",
+      "n_hold": 6014,
+      "accuracy": 0.9977,
+      "majority": 0.9977,
+      "ece": 0.0007,
+      "temperature": 1.403,
+      "nll": 0.0081,
+      "mae_levels": 0.01
+    },
+    "safe_to_park": {
+      "type": "noul",
+      "n_hold": 48,
+      "accuracy": 1.0,
+      "majority": 1.0,
+      "ece": 0.0,
+      "temperature": 0.219,
+      "nll": -0.0
+    },
+    "is_final_turn": {
+      "type": "noul",
+      "n_hold": 2098,
+      "accuracy": 0.9385,
+      "majority": 0.909,
+      "ece": 0.0058,
+      "temperature": 1.211,
+      "nll": 0.1581
+    },
+    "tool_will_error": {
+      "type": "noul",
+      "n_hold": 2211,
+      "accuracy": 0.9855,
+      "majority": 0.9114,
+      "ece": 0.0073,
+      "temperature": 0.918,
+      "nll": 0.0599
+    },
+    "cost_class": {
+      "type": "choice",
+      "n_hold": 4309,
+      "accuracy": 1.0,
+      "majority": 1.0,
+      "ece": 0.0,
+      "temperature": 0.267,
+      "nll": -0.0
+    },
+    "budget_will_exceed": {
+      "type": "noul",
+      "n_hold": 3079,
+      "accuracy": 1.0,
+      "majority": 1.0,
+      "ece": 0.0,
+      "temperature": 0.264,
+      "nll": -0.0
+    },
+    "stuck_in_loop": {
+      "type": "noul",
+      "n_hold": 1811,
+      "accuracy": 0.8476,
+      "majority": 0.8476,
+      "ece": 0.0233,
+      "temperature": 1.268,
+      "nll": 0.3944
+    },
+    "phase": {
+      "type": "choice",
+      "n_hold": 1811,
+      "accuracy": 0.9067,
+      "majority": 0.4484,
+      "ece": 0.0174,
+      "temperature": 0.983,
+      "nll": 0.2598
+    }
+  },
+  "saved": "data/models/jev.tracelab_society.npz"
+}

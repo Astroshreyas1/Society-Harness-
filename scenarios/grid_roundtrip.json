@@ -1,0 +1,10 @@
+{
+  "_doc": "C2 round trip: the hosted society regenerated from recipes/marginals fitted on its own synthetic traces (data/fitted/*.hosted_synthetic.json). Compare E2/E3 against data/synthetic/hosted uncoordinated 1/min.",
+  "base": "scenarios/hosted_mixed.json",
+  "seeds": [1, 2, 3, 4, 5],
+  "axes": {
+    "policy.type": ["uncoordinated"],
+    "recipes": ["data/fitted/recipes.hosted_synthetic.json"],
+    "marginals": ["data/fitted/marginals.hosted_synthetic.json"]
+  }
+}

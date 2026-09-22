@@ -1,0 +1,37 @@
+{
+  "_doc": "Rung 3 on the real-structure society (TraceLab fit): gate {fifo, vtfq, srpt} at idle timeout {0, 300}, lease, clairvoyant; load sweep; 10 seeds. Summaries only.",
+  "base": "scenarios/hosted_tracelab.json",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "axes": {
+    "policy.type": [
+      "reactive_gate",
+      "lease",
+      "clairvoyant"
+    ],
+    "policy.queue": [
+      "fifo",
+      "vtfq",
+      "srpt"
+    ],
+    "framework.sandbox_idle_timeout_s": [
+      0,
+      300
+    ],
+    "arrivals.rate_per_min": [
+      1.0,
+      2.0,
+      4.0
+    ]
+  }
+}

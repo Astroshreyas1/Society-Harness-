@@ -1,0 +1,45 @@
+{
+  "_doc": "Phase 7 variants on the MCP / budget society (models trained on its own traces).",
+  "uncoordinated": [
+    "policy.type=uncoordinated"
+  ],
+  "gate_vtfq0": [
+    "policy.type=reactive_gate",
+    "policy.queue=vtfq",
+    "framework.sandbox_idle_timeout_s=0"
+  ],
+  "gate_fifo300": [
+    "policy.type=reactive_gate",
+    "policy.queue=fifo",
+    "framework.sandbox_idle_timeout_s=300"
+  ],
+  "needs": [
+    "policy.type=needs"
+  ],
+  "needs_pre": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.mcp.npz"
+  ],
+  "needs_jev": [
+    "policy.type=needs",
+    "policy.needs.model=data/models/needs.mcp.npz",
+    "policy.needs.jev.enabled=true",
+    "policy.needs.jev.model=data/models/jev.mcp.npz"
+  ],
+  "needs-pacing": [
+    "policy.type=needs",
+    "policy.ablate=pacing"
+  ],
+  "needs-feedback": [
+    "policy.type=needs",
+    "policy.ablate=feedback"
+  ],
+  "needs-pacing_feedback": [
+    "policy.type=needs",
+    "policy.ablate=pacing+feedback"
+  ],
+  "oracle0": [
+    "policy.type=clairvoyant",
+    "framework.sandbox_idle_timeout_s=0"
+  ]
+}

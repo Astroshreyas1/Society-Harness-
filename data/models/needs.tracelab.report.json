@@ -1,0 +1,79 @@
+{
+  "records": 287052,
+  "train": 223618,
+  "holdout": {
+    "Q_out": {
+      "n": 21282,
+      "mae_median": 0.9702,
+      "mae_const": 1.0287,
+      "cover80": 0.717,
+      "cover95": 0.893,
+      "pinball80_ratio": 0.98,
+      "pinball95_ratio": 1.082,
+      "r2_median": 0.051
+    },
+    "G": {
+      "n": 21282,
+      "accuracy": 1.0,
+      "majority": 1.0
+    },
+    "R": {
+      "n": 59372,
+      "brier": 0.0,
+      "brier_const": 0.0,
+      "base_rate": 0.0
+    },
+    "Q_tool": {
+      "n": 21147,
+      "mae_median": 1.4403,
+      "mae_const": 1.9141,
+      "cover80": 0.877,
+      "cover95": 0.979,
+      "pinball80_ratio": 0.806,
+      "pinball95_ratio": 0.853,
+      "r2_median": 0.344
+    },
+    "T_gap": {
+      "n": 18832,
+      "mae_median": 1.2544,
+      "mae_const": 1.6159,
+      "cover80": 0.833,
+      "cover95": 0.971,
+      "pinball80_ratio": 0.781,
+      "pinball95_ratio": 0.876,
+      "r2_median": 0.211
+    },
+    "S2": {
+      "n": 18841,
+      "accuracy": 0.884,
+      "majority": 0.886
+    },
+    "S3": {
+      "n": 18841,
+      "accuracy": 0.453,
+      "majority": 0.451
+    },
+    "I_gap": {
+      "n": 2150,
+      "mae_median": 1.7066,
+      "mae_const": 1.6491,
+      "cover80": 0.829,
+      "cover95": 0.935,
+      "pinball80_ratio": 1.006,
+      "pinball95_ratio": 1.009,
+      "r2_median": -0.019
+    },
+    "I_cold": {
+      "n": 2150,
+      "brier": 0.0496,
+      "brier_const": 0.0494,
+      "base_rate": 0.9479
+    }
+  },
+  "loss_per_epoch": [
+    2.5912,
+    2.4804,
+    2.4561
+  ],
+  "saved": "data/models/needs.tracelab.npz"
+}

@@ -1,0 +1,263 @@
+{
+  "provenance": {
+    "note": "Seed priors. Every entry is to be replaced by `python -m agentsim fit` on real OTel-shaped traces at rung 0. Numbers marked TraceLab are from Zhu et al. 2026 (arXiv 2606.30560, Tables 2/7/8/10, Fig. 8, Sec. 6). AgentServeSim = arXiv 2606.09613 Table 3 (BFCL v4, SWE-bench via mini-SWE-agent). AgentSysBench = arXiv 2608.15127. Entries marked PRIOR are unverified guesses exposed as knobs.",
+    "tool_duration": "Shaped to reproduce TraceLab Fig. 8 / Sec. 6.2 (Claude): calls <1 s = 70% of calls and <1% of tool time; calls >1 min = 4.9% of calls and 92% of tool time; mean 16.8 s. Per-kind split is PRIOR; the aggregate is checked by `fidelity` and reported.",
+    "output_tokens.coding": "fitted, n=9737",
+    "append_tokens.coding": "fitted, n=7581 (per-tool share of the context growth between consecutive chats; negative deltas from compaction dropped)",
+    "initial_context_tokens.coding": "fitted, n=543 (tokens_in of the first chat, includes the first user message)",
+    "output_tokens.function_calling": "fitted, n=2797",
+    "append_tokens.function_calling": "fitted, n=1578 (per-tool share of the context growth between consecutive chats; negative deltas from compaction dropped)",
+    "think_time": "fitted, n=1659",
+    "session_requests": "fitted from 482 completed sessions (censored sessions excluded: biased short)",
+    "sandbox_mem_gb": "fitted from per-session sandbox memory, n=588",
+    "retrieval_duration": "fitted, n=1338",
+    "tool_duration.bash": "fitted 3-component lognormal mixture by EM (BIC over 1-3), n=2040",
+    "tool_duration.read": "fitted 3-component lognormal mixture by EM (BIC over 1-3), n=4197",
+    "tool_duration.edit": "fitted 1-component lognormal mixture by EM (BIC over 1-3), n=2738",
+    "tool_duration.api": "fitted 1-component lognormal mixture by EM (BIC over 1-3), n=1639",
+    "tool_duration.search": "fitted 1-component lognormal mixture by EM (BIC over 1-3), n=1728",
+    "tool_duration.grep": "fitted 2-component lognormal mixture by EM (BIC over 1-3), n=1478",
+    "tool_duration.web": "fitted 1-component lognormal mixture by EM (BIC over 1-3), n=1159",
+    "tool_duration.test": "fitted 3-component lognormal mixture by EM (BIC over 1-3), n=705",
+    "output_tokens.research": "fitted, n=3364",
+    "append_tokens.research": "fitted, n=2199 (per-tool share of the context growth between consecutive chats; negative deltas from compaction dropped)",
+    "initial_context_tokens.function_calling": "fitted, n=233 (tokens_in of the first chat, includes the first user message)",
+    "initial_context_tokens.research": "fitted, n=117 (tokens_in of the first chat, includes the first user message)",
+    "fitted_entries": [
+      "append_tokens.coding",
+      "append_tokens.function_calling",
+      "append_tokens.research",
+      "initial_context_tokens.coding",
+      "initial_context_tokens.function_calling",
+      "initial_context_tokens.research",
+      "output_tokens.coding",
+      "output_tokens.function_calling",
+      "output_tokens.research",
+      "retrieval_duration",
+      "sandbox_mem_gb",
+      "session_requests",
+      "think_time",
+      "tool_duration.api",
+      "tool_duration.bash",
+      "tool_duration.edit",
+      "tool_duration.grep",
+      "tool_duration.read",
+      "tool_duration.search",
+      "tool_duration.test",
+      "tool_duration.web"
+    ],
+    "unfitted_entries": []
+  },
+  "tool_duration": {
+    "read": {
+      "type": "mixture",
+      "weights": [
+        0.434652006948082,
+        0.468859834479554,
+        0.09648815857236472
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 0.1211204143487139,
+          "p99": 0.8883394754751679
+        },
+        {
+          "type": "lognormal",
+          "median": 0.12015175730089042,
+          "p99": 2.508835377711703
+        },
+        {
+          "type": "lognormal",
+          "median": 3.1521065938345934,
+          "p99": 3.5409263827981547
+        }
+      ],
+      "cap": 3600
+    },
+    "edit": {
+      "type": "lognormal",
+      "median": 0.15727469560319324,
+      "p99": 2.2663720537098433,
+      "cap": 3600
+    },
+    "grep": {
+      "type": "mixture",
+      "weights": [
+        0.9229211416368598,
+        0.07707885836314154
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 0.20733138111284083,
+          "p99": 3.384570143723044
+        },
+        {
+          "type": "lognormal",
+          "median": 3.2030724993707294,
+          "p99": 3.6268477120014695
+        }
+      ],
+      "cap": 3600
+    },
+    "bash": {
+      "type": "mixture",
+      "weights": [
+        0.5136670598766065,
+        0.3900355910288291,
+        0.09629734909456572
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 0.27176211153898044,
+          "p99": 2.264858089000088
+        },
+        {
+          "type": "lognormal",
+          "median": 3.844041363205892,
+          "p99": 47.061564599805656
+        },
+        {
+          "type": "lognormal",
+          "median": 122.59374188509078,
+          "p99": 1095.7321223273632
+        }
+      ],
+      "cap": 3600
+    },
+    "test": {
+      "type": "mixture",
+      "weights": [
+        0.34939745633071334,
+        0.46498168773849113,
+        0.18562085593079905
+      ],
+      "parts": [
+        {
+          "type": "lognormal",
+          "median": 10.101567681240809,
+          "p99": 87.26502870524
+        },
+        {
+          "type": "lognormal",
+          "median": 132.60280892288026,
+          "p99": 560.8768217086081
+        },
+        {
+          "type": "lognormal",
+          "median": 434.57505533572885,
+          "p99": 1002.419289615627
+        }
+      ],
+      "cap": 3600
+    },
+    "search": {
+      "type": "lognormal",
+      "median": 1.1162389207647154,
+      "p99": 13.132731217811596,
+      "cap": 3600
+    },
+    "web": {
+      "type": "lognormal",
+      "median": 2.0642078154377943,
+      "p99": 27.21236608068586,
+      "cap": 3600
+    },
+    "api": {
+      "type": "lognormal",
+      "median": 0.7898905120265679,
+      "p99": 9.218760220287512,
+      "cap": 3600
+    }
+  },
+  "output_tokens": {
+    "coding": {
+      "type": "lognormal",
+      "median": 250.0,
+      "p99": 6171.639999999999,
+      "cap": 32000
+    },
+    "function_calling": {
+      "type": "lognormal",
+      "median": 30.0,
+      "p99": 394.1999999999998,
+      "cap": 32000
+    },
+    "research": {
+      "type": "lognormal",
+      "median": 411.5,
+      "p99": 7721.129999999973,
+      "cap": 32000
+    }
+  },
+  "append_tokens": {
+    "coding": {
+      "type": "lognormal",
+      "median": 1303.0,
+      "p99": 111942.39999999992,
+      "cap": 120000
+    },
+    "function_calling": {
+      "type": "lognormal",
+      "median": 307.0,
+      "p99": 4327.830000000004,
+      "cap": 120000
+    },
+    "research": {
+      "type": "lognormal",
+      "median": 2482.0,
+      "p99": 41585.7,
+      "cap": 120000
+    }
+  },
+  "initial_context_tokens": {
+    "coding": {
+      "type": "lognormal",
+      "median": 23323.0,
+      "p99": 158240.1000000001,
+      "cap": 400000
+    },
+    "function_calling": {
+      "type": "lognormal",
+      "median": 4705.0,
+      "p99": 10971.800000000003,
+      "cap": 400000
+    },
+    "research": {
+      "type": "lognormal",
+      "median": 10448.0,
+      "p99": 37521.64000000001,
+      "cap": 400000
+    }
+  },
+  "think_time": {
+    "type": "lognormal",
+    "median": 82.09724699292559,
+    "p90": 1210.7870178503838,
+    "cap": 14400
+  },
+  "session_requests": {
+    "type": "one_or",
+    "p_one": 0.7883817427385892,
+    "then": {
+      "type": "lognormal",
+      "median": 3.5,
+      "p99": 10.989999999999995,
+      "cap": 300
+    }
+  },
+  "sandbox_mem_gb": {
+    "type": "lognormal",
+    "median": 3.5420137757109678,
+    "p99": 21.337238393222627,
+    "cap": 64
+  },
+  "retrieval_duration": {
+    "type": "lognormal",
+    "median": 0.3977109585464973,
+    "p99": 4.4218387061218865,
+    "cap": 600
+  }
+}

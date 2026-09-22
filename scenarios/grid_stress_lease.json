@@ -1,0 +1,9 @@
+{
+  "_doc": "Rung 3 slice 3: budget leases on the stress society; ext.search+ext.web RPM tied x policy, 10 seeds. Summaries only.",
+  "base": "scenarios/hosted_stress.json",
+  "seeds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "axes": {
+    "policy.type": ["reactive_gate", "lease", "clairvoyant"],
+    "resources.ext.search.rpm|resources.ext.web.rpm": [10, 20, 40]
+  }
+}

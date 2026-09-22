@@ -1,0 +1,40 @@
+{
+  "_doc": "E6 ablation for rung 3 slice 1 (HANDOFF \u00a74 checklist: weak baseline? strong policy?). Hosted 2/min x idle predictability x {gate at idle timeouts 0/60/300 s} vs {lease with features switched off}, 10 seeds. The tag 'ablate=' lists what is OFF.",
+  "base": "scenarios/hosted_mixed.json",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "axes": {
+    "policy.type": [
+      "reactive_gate",
+      "lease"
+    ],
+    "framework.sandbox_idle_timeout_s": [
+      0,
+      60,
+      300
+    ],
+    "policy.ablate": [
+      "",
+      "vtfq",
+      "park+prewarm",
+      "vtfq+park+prewarm+kv+gang+budget"
+    ],
+    "arrivals.rate_per_min": [
+      2.0
+    ],
+    "generator.think_snr": [
+      0.0,
+      0.9
+    ]
+  }
+}

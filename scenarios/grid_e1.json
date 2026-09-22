@@ -1,0 +1,24 @@
+{
+  "_doc": "E1: failure vs concurrency. N autonomous coding agents on one API key (8 slots), three policies, 5 seeds.",
+  "base": "scenarios/api_coding.json",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "axes": {
+    "policy.type": [
+      "uncoordinated",
+      "reactive_gate",
+      "clairvoyant"
+    ],
+    "arrivals.population": [
+      5,
+      10,
+      20,
+      50
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "_doc": "Rung 3 slice 1 scoreboard: hosted society x load x idle predictability x lease quantile knob x policy, 10 seeds (learned rungs: v2 §6.0). tau only affects the lease; gate/oracle rows repeat per tau so every cell is paired. Summaries only.",
+  "base": "scenarios/hosted_mixed.json",
+  "seeds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "axes": {
+    "policy.type": ["reactive_gate", "lease", "clairvoyant"],
+    "arrivals.rate_per_min": [1.0, 2.0],
+    "generator.think_snr": [0.0, 0.5, 0.9],
+    "policy.tau": [0.5, 0.8, 0.9]
+  }
+}
